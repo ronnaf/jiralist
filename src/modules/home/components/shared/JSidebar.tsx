@@ -8,7 +8,9 @@ import { colors, H1, Regular } from '../../../core/Styles';
 
 type Props = {
   projects: JiraProject[];
+  loading: boolean;
   handleLogout: () => void;
+  handleProjectChange: React.Dispatch<React.SetStateAction<JiraProject | null>>;
 };
 
 export const JSidebar = (props: Props) => {
@@ -17,15 +19,19 @@ export const JSidebar = (props: Props) => {
       <div>
         <H1>Recent Projects</H1>
         <SizedBox height={26} />
-        <Projects>
-          {props.projects.map(project => (
-            <div key={project.id}>
-              <JRawButton>
-                <Regular>{project.name}</Regular>
-              </JRawButton>
-            </div>
-          ))}
-        </Projects>
+        {props.loading ? (
+          <Regular>Loading...</Regular>
+        ) : (
+          <Projects>
+            {props.projects.map(project => (
+              <div key={project.id}>
+                <JRawButton onClick={() => props.handleProjectChange(project)}>
+                  <Regular>{project.name}</Regular>
+                </JRawButton>
+              </div>
+            ))}
+          </Projects>
+        )}
         <SizedBox height={26} />
         <JButton title="Log out" onClick={props.handleLogout} />
       </div>

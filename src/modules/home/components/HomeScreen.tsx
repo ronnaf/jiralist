@@ -12,7 +12,12 @@ export const HomeScreen = (props: HomeProps) => {
       <InnerContainer>
         <JHeader displayName={props.currentUser?.displayName || '-'} />
         <Main>
-          <JSidebar projects={props.projects} handleLogout={props.userClickedLogout} />
+          <JSidebar
+            projects={props.projects}
+            loading={props.loadingProjects}
+            handleLogout={props.userClickedLogout}
+            handleProjectChange={props.userChangedCurrentProject}
+          />
           <Body>
             {props.currentProject && (
               <Flex>
@@ -24,15 +29,19 @@ export const HomeScreen = (props: HomeProps) => {
             <H1>Issues</H1>
             <Subtitle>Issues that are currently in TODO or IN PROGRESS</Subtitle>
             <SizedBox height={10} />
-            <Issues>
-              {props.issues.map(issue => (
-                <Issue key={issue.id}>
-                  <Regular>
-                    [<b>{issue.key}</b>] <IssueDivide>|</IssueDivide> {issue.fields.summary}
-                  </Regular>
-                </Issue>
-              ))}
-            </Issues>
+            {props.loadingIssues ? (
+              <Regular>Loading...</Regular>
+            ) : (
+              <Issues>
+                {props.issues.map(issue => (
+                  <Issue key={issue.id}>
+                    <Regular>
+                      [<b>{issue.key}</b>] <IssueDivide>|</IssueDivide> {issue.fields.summary}
+                    </Regular>
+                  </Issue>
+                ))}
+              </Issues>
+            )}
           </Body>
         </Main>
       </InnerContainer>

@@ -17,7 +17,10 @@ export type HomeProps = {
   issues: JiraIssue[];
   currentProject: JiraProject | null;
   currentUser: JiraUser | null;
+  loadingIssues: boolean;
+  loadingProjects: boolean;
   userClickedLogout: () => void;
+  userChangedCurrentProject: React.Dispatch<React.SetStateAction<JiraProject | null>>;
 };
 
 export const HomeContainer = () => {
@@ -25,6 +28,8 @@ export const HomeContainer = () => {
   const user = useSelector((state: RootState) => state.user.profile);
   const [currentProject, setCurrentProject] = useState<JiraProject | null>(null);
   const [issues, setIssues] = useState<JiraIssue[]>([]);
+  const [loadingIssues, setLoadingIssues] = useState(false);
+  const [loadingProjects, setLoadingProjects] = useState(false);
 
   const { jiraAPI, services } = Environment.current();
   const dispatch = useDispatch();
@@ -47,7 +52,9 @@ export const HomeContainer = () => {
   // Gets recent projects on mount
   useEffect(() => {
     (async () => {
+      setLoadingProjects(true);
       const result = await jiraAPI.getProjects();
+      setLoadingProjects(false);
       if (result.success) {
         dispatch(projectSlice.actions.receivedList({ projects: result.value }));
         setCurrentProject(result.value[0]);
@@ -61,7 +68,9 @@ export const HomeContainer = () => {
   useEffect(() => {
     if (!currentProject?.key) return;
     (async () => {
+      setLoadingIssues(true);
       const result = await jiraAPI.getProjectIssues(currentProject.key);
+      setLoadingIssues(false);
       if (result.success) {
         setIssues(result.value);
       } else {
@@ -76,11 +85,14 @@ export const HomeContainer = () => {
       issues={issues}
       currentProject={currentProject}
       currentUser={user}
+      loadingIssues={loadingIssues}
+      loadingProjects={loadingProjects}
       userClickedLogout={() => {
         services.storage.clear();
         dispatch({ type: LOGOUT_ACTION });
         history.push(routes.LOGIN);
       }}
+      userChangedCurrentProject={setCurrentProject}
     />
   );
 };

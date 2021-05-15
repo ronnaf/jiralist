@@ -20,8 +20,7 @@ export const jiraAPIClient = (options: {
     },
     getProjectIssues: async projectKey => {
       try {
-        const url =
-          '/rest/api/3/search?jql=project=RH AND assignee=currentuser() AND (status="in progress" OR status="to do")&fields=summary,status,assignee';
+        const url = `/rest/api/3/search?jql=project=${projectKey} AND assignee=currentuser() AND (status="in progress" OR status="to do")&fields=summary,status,assignee`;
         const result = await jFetch({
           baseUrl: options.baseURL,
           url,
