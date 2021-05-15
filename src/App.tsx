@@ -1,9 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
-import './App.css';
-import { HomeContainer as Home } from './modules/home/containers/HomeContainer';
-import { TodoAddContainer as TodoAdd } from './modules/todo/containers/TodoAddContainer';
-import { TodoListContainer as TodoList } from './modules/todo/containers/TodoListContainer';
+import { PrivateRoute } from './modules/core/PrivateRoute';
+import { HomeContainer } from './modules/home/containers/HomeContainer';
+import { LoginContainer } from './modules/login/containers/LoginContainer';
+import { TodoAddContainer } from './modules/todo/containers/TodoAddContainer';
+import { TodoListContainer } from './modules/todo/containers/TodoListContainer';
 import { routes } from './routes';
 
 /** Routes are structured here, and declared at routes.json */
@@ -14,15 +15,10 @@ const App = () => {
         <Route exact path="/">
           <Redirect to={{ pathname: routes.HOME }} />
         </Route>
-        <Route path={routes.HOME}>
-          <Home />
-        </Route>
-        <Route path={routes.TODO__ADD}>
-          <TodoAdd />
-        </Route>
-        <Route path={routes.TODO__LIST}>
-          <TodoList />
-        </Route>
+        <Route path={routes.LOGIN} component={LoginContainer} />
+        <PrivateRoute path={routes.HOME} component={HomeContainer} />
+        <PrivateRoute path={routes.TODO__ADD} component={TodoAddContainer} />
+        <PrivateRoute path={routes.TODO__LIST} component={TodoListContainer} />
       </Switch>
     </Router>
   );

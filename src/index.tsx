@@ -1,32 +1,41 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import './index.css';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import styled from 'styled-components';
 import { arnoAPIClient } from './api/ArnoClient';
+import App from './App';
 import { Environment } from './Environment';
+import './index.css';
 import { store } from './model/store';
+import reportWebVitals from './reportWebVitals';
 import { auth0Service } from './services/Auth0Service';
+import { localStorageService } from './services/LocalStorageService';
 import { LocalLoggingService } from './services/LoggingService';
 
-// Temporary solution for token storage.
-// TODO: Remove this and use local storage.
-const token: string | undefined = undefined;
+const styles = {
+  toast: { width: 'unset' },
+};
+
+const StyledToast = styled(ToastContainer).attrs({})`
+  .Toastify__toast {
+    justify-content: center;
+    min-height: unset;
+    border-radius: 4px;
+  }
+`;
 
 const startup = () => {
   // 1. Set the Environment.
-  // TODO: actually set these up
   Environment.set({
     api: arnoAPIClient({
       baseURL: '',
-      getToken: () => Promise.resolve(token),
     }),
     services: {
       auth: auth0Service({ clientID: '', domain: '' }),
       logger: LocalLoggingService,
+      storage: localStorageService,
     },
   });
 
@@ -34,6 +43,7 @@ const startup = () => {
     <Provider store={store}>
       <React.StrictMode>
         <App />
+        <StyledToast position="bottom-center" hideProgressBar closeButton={false} style={styles.toast} />
       </React.StrictMode>
     </Provider>,
     document.getElementById('root')

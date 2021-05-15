@@ -1,5 +1,6 @@
 import { API } from './api/API';
 import { Auth0Service } from './services/Auth0Service';
+import { LocalStorageService } from './services/LocalStorageService';
 import { LoggingService } from './services/LoggingService';
 
 /** Change 'Arno' to product name */
@@ -10,6 +11,7 @@ type ArnoEnvironment = {
   services: {
     auth: Auth0Service;
     logger: LoggingService;
+    storage: LocalStorageService;
   };
   // ...
 };

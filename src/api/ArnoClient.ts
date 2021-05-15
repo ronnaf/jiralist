@@ -9,8 +9,6 @@ import { API } from './API';
 export const arnoAPIClient = (options: {
   /** The API's base URL. */
   baseURL: string;
-  /** A function for retrieving the authentication token. */
-  getToken: () => Promise<string | undefined>;
 }): API => {
   return {
     getUser: () => Promise.resolve(Result.success({ firstName: 'arno', id: 1 })),

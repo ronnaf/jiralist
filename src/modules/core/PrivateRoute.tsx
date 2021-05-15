@@ -1,5 +1,7 @@
 import React from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
+import { Environment } from '../../Environment';
+import { jStorageKeys } from '../../services/LocalStorageService';
 
 interface Props extends RouteProps {}
 
@@ -10,23 +12,25 @@ interface Props extends RouteProps {}
  * @param rest
  * @constructor
  */
-const PrivateRoute: React.FC<Props> = ({ children, ...rest }) => {
-  let isAuthenticated = true;
+export const PrivateRoute: React.FC<Props> = ({ children, component: Component, ...rest }) => {
+  const { services } = Environment.current();
+  const isAuthenticated = !!services.storage.getToken(jStorageKeys.J_API_TOKEN);
+
   return (
     <Route
-      {...rest}
-      render={({ location }) =>
+      render={props =>
         isAuthenticated ? (
-          children
+          children || (Component && <Component {...props} />)
         ) : (
           <Redirect
             to={{
               pathname: '/login',
-              state: { from: location },
+              state: { from: props.location },
             }}
           />
         )
       }
+      {...rest}
     />
   );
 };
