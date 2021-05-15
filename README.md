@@ -1,4 +1,5 @@
-# arno-www
+# jiralist
+
 react/typescript template based on the [arno](https://github.com/smashingboxes/arno) react native template.
 
 ## file structure
