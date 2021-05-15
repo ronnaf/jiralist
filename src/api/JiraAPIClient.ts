@@ -18,5 +18,29 @@ export const jiraAPIClient = (options: {
         return Result.failure(e.message);
       }
     },
+    getProjectIssues: async projectKey => {
+      try {
+        const url =
+          '/rest/api/3/search?jql=project=RH AND assignee=currentuser() AND (status="in progress" OR status="to do")&fields=summary,status,assignee';
+        const result = await jFetch({
+          baseUrl: options.baseURL,
+          url,
+        });
+        return Result.success(result.issues);
+      } catch (e) {
+        return Result.failure(e.message);
+      }
+    },
+    getCurrentUser: async () => {
+      try {
+        const result = await jFetch({
+          baseUrl: options.baseURL,
+          url: '/rest/api/3/myself',
+        });
+        return Result.success(result);
+      } catch (e) {
+        return Result.failure(e.message);
+      }
+    },
   };
 };

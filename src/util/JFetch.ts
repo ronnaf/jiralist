@@ -24,6 +24,7 @@ export const jFetch = async (args: Args) => {
     method: args.method || 'GET',
     data: args.data,
     headers: {
+      'X-Atlassian-Token': 'no-check',
       Accept: 'application/json',
       Authorization: `Basic ${apiKey}`,
     },

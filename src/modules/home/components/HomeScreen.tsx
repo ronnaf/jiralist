@@ -1,36 +1,40 @@
 import React from 'react';
 import styled from 'styled-components';
-import { JButton } from '../../core/JButton';
-import { JRawButton } from '../../core/JRawButton';
 import { SizedBox } from '../../core/SizedBox';
-import { colors, H1, Regular } from '../../core/Styles';
+import { colors, H1, Regular, Subtitle } from '../../core/Styles';
 import { HomeProps } from '../containers/HomeContainer';
+import { JHeader } from './shared/JHeader';
+import { JSidebar } from './shared/JSidebar';
 
 export const HomeScreen = (props: HomeProps) => {
   return (
     <Container>
       <InnerContainer>
-        <Sidebar>
-          <div>
-            <H1>Recent Projects</H1>
-            <SizedBox height={26} />
-            <Projects>
-              {props.projects.map(project => (
-                <div key={project.id}>
-                  <JRawButton>
-                    <Regular>{project.name}</Regular>
-                  </JRawButton>
-                </div>
+        <JHeader displayName={props.currentUser?.displayName || '-'} />
+        <Main>
+          <JSidebar projects={props.projects} handleLogout={props.userClickedLogout} />
+          <Body>
+            {props.currentProject && (
+              <Flex>
+                <H1>{props.currentProject?.name}</H1>
+                <Regular>({props.currentProject?.key})</Regular>
+              </Flex>
+            )}
+            <SizedBox height={16} />
+            <H1>Issues</H1>
+            <Subtitle>Issues that are currently in TODO or IN PROGRESS</Subtitle>
+            <SizedBox height={10} />
+            <Issues>
+              {props.issues.map(issue => (
+                <Issue key={issue.id}>
+                  <Regular>
+                    [<b>{issue.key}</b>] <IssueDivide>|</IssueDivide> {issue.fields.summary}
+                  </Regular>
+                </Issue>
               ))}
-            </Projects>
-            <SizedBox height={26} />
-            <JButton title="Log out" onClick={props.userClickedLogout} />
-          </div>
-          <VerticalLine />
-        </Sidebar>
-        <Body>
-          <Regular>Hello world</Regular>
-        </Body>
+            </Issues>
+          </Body>
+        </Main>
       </InnerContainer>
     </Container>
   );
@@ -42,32 +46,34 @@ const Container = styled.div`
 `;
 
 const InnerContainer = styled.div`
-  max-width: 768px;
+  max-width: 1024px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 3fr;
+  padding: 3rem 2rem;
 `;
 
-const Sidebar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 16px;
+const Main = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  margin-top: 3rem;
 `;
 
 const Body = styled.div`
   padding-left: 20px;
-  margin-top: 16px;
 `;
 
-const VerticalLine = styled.div`
-  width: 1px;
-  background-color: ${colors.shadow};
-  height: 95%;
-`;
-
-const Projects = styled.div`
+const Flex = styled.div`
+  display: flex;
+  align-items: flex-end;
   & > :not(:last-child) {
-    margin-bottom: 4px;
+    margin-right: 8px;
   }
+`;
+
+const Issues = styled.div``;
+
+const Issue = styled.div``;
+
+const IssueDivide = styled.span`
+  color: grey;
+  margin: 0 2px;
 `;
