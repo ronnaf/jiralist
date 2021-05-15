@@ -1,6 +1,9 @@
 # jiralist
 
-react/typescript template based on the [arno](https://github.com/smashingboxes/arno) react native template.
+> react/typescript template based on the [arno](https://github.com/smashingboxes/arno) react native template.
+
+**rough idea:**  
+create a checklist app that connects to Jira to list out your current issues (todo, and in progress). when you cross-out an item, it will group into the date you crossed it out on.
 
 ## file structure
 
