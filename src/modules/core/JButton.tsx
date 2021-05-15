@@ -1,34 +1,34 @@
 import React from 'react';
 import { BsArrowRight } from 'react-icons/bs';
 import styled from 'styled-components';
+import { JRawButton } from './JRawButton';
 import { SizedBox } from './SizedBox';
-import { colors, H1 } from './Styles';
+import { colors, ButtonText, JTextProps } from './Styles';
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   title: string;
+  buttonTextProps?: JTextProps;
 }
 
 export const JButton = (props: Props) => {
-  const { title, ...buttonProps } = props;
+  const { title, buttonTextProps, ...buttonProps } = props;
   return (
     <Button {...buttonProps}>
-      <H1 transform="uppercase">{props.title}</H1>
+      <ButtonText weight="bold" {...buttonTextProps}>
+        {props.title}
+      </ButtonText>
       <SizedBox width={4} />
       <BsArrowRight color={colors.background2} />
     </Button>
   );
 };
 
-const RawButton = styled.button`
-  all: unset;
-  outline: none;
-`;
-
-const Button = styled(RawButton)`
+const Button = styled(JRawButton)`
   display: flex;
   align-items: center;
+  padding-bottom: 4px;
   &:hover {
-    border-bottom: 1px solid ${colors.shadow};
+    border-bottom: 2px solid ${colors.shadow};
     cursor: pointer;
   }
 `;

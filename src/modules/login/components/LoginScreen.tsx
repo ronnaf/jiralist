@@ -36,7 +36,13 @@ export const LoginScreen: React.FC<LoginProps> = props => {
           }
         />
         <SizedBox height={26} />
-        <JButton title="go" onClick={props.userClickedGo} />
+        <JButton
+          title="go"
+          buttonTextProps={{
+            transform: 'uppercase',
+          }}
+          onClick={props.userClickedGo}
+        />
       </CenteredContainer>
     </Container>
   );

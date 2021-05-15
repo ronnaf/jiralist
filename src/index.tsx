@@ -3,12 +3,14 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { PersistGate } from 'redux-persist/integration/react';
 import styled from 'styled-components';
 import { arnoAPIClient } from './api/ArnoClient';
+import { jiraAPIClient } from './api/JiraAPIClient';
 import App from './App';
 import { Environment } from './Environment';
 import './index.css';
-import { store } from './model/store';
+import { persistor, store } from './model/store';
 import reportWebVitals from './reportWebVitals';
 import { auth0Service } from './services/Auth0Service';
 import { localStorageService } from './services/LocalStorageService';
@@ -18,7 +20,7 @@ const styles = {
   toast: { width: 'unset' },
 };
 
-const StyledToast = styled(ToastContainer).attrs({})`
+const StyledToast = styled(ToastContainer)`
   .Toastify__toast {
     justify-content: center;
     min-height: unset;
@@ -32,6 +34,9 @@ const startup = () => {
     api: arnoAPIClient({
       baseURL: '',
     }),
+    jiraAPI: jiraAPIClient({
+      baseURL: 'https://smashingboxes.atlassian.net',
+    }),
     services: {
       auth: auth0Service({ clientID: '', domain: '' }),
       logger: LocalLoggingService,
@@ -41,10 +46,12 @@ const startup = () => {
 
   ReactDOM.render(
     <Provider store={store}>
-      <React.StrictMode>
-        <App />
-        <StyledToast position="bottom-center" hideProgressBar closeButton={false} style={styles.toast} />
-      </React.StrictMode>
+      <PersistGate persistor={persistor}>
+        <React.StrictMode>
+          <App />
+          <StyledToast position="bottom-center" hideProgressBar closeButton={false} style={styles.toast} />
+        </React.StrictMode>
+      </PersistGate>
     </Provider>,
     document.getElementById('root')
   );

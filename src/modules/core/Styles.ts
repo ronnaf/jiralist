@@ -6,14 +6,27 @@ export const colors = {
   shadow: '#8c8c8c',
 };
 
-export const Regular = styled.div`
+export type JTextProps = {
+  transform?: 'none' | 'uppercase' | 'lowercase';
+  weight?: '400' | 'bold';
+};
+
+export const Regular = styled.div<JTextProps>`
   font-size: 16px;
   color: ${colors.background2};
 `;
 
-export const H1 = styled.div<{ transform?: 'none' | 'uppercase' | 'lowercase' }>`
+export const H1 = styled.div<JTextProps>`
   font-size: 18px;
   color: ${colors.background2};
   font-weight: bold;
   text-transform: ${p => p.transform || 'none'};
+`;
+
+export const ButtonText = styled.div<JTextProps>`
+  font-size: 14px;
+  color: ${colors.background2};
+  font-weight: ${p => p.weight};
+  text-transform: ${p => p.transform || 'none'};
+  letter-spacing: 1.5px;
 `;

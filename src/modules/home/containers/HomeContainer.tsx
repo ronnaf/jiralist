@@ -1,24 +1,46 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { User } from '../../../api/models/User';
-import { RootState } from '../../../model/store';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import { toast } from 'react-toastify';
+import { JiraProject } from '../../../api/models/JiraProject';
+import { Environment } from '../../../Environment';
+import { projectSlice } from '../../../model/projectSlice';
+import { LOGOUT_ACTION, RootState } from '../../../model/store';
+import { routes } from '../../../routes';
 import { HomeScreen } from '../components/HomeScreen';
 
 export type HomeProps = {
-  profile: User | null;
+  projects: JiraProject[];
+  userClickedLogout: () => void;
 };
 
-/**
- * Why is this not following the same structure as (link below)?
- * https://github.com/smashingboxes/arno/blob/dev/src/modules/home/containers/HomeContainer.tsx
- *
- * Reason 1: Don’t call Hooks inside loops, conditions, or nested functions
- * (https://reactjs.org/docs/hooks-rules.html#only-call-hooks-at-the-top-level)
- * Reason 2: Don’t call Hooks from regular JavaScript functions.
- * (https://reactjs.org/docs/hooks-rules.html#only-call-hooks-from-react-functions)
- */
 export const HomeContainer = () => {
-  const profile = useSelector((state: RootState) => state.user.profile);
+  const { jiraAPI, services } = Environment.current();
+  const dispatch = useDispatch();
+  const history = useHistory();
 
-  return <HomeScreen profile={profile} />;
+  const projects = useSelector((state: RootState) => state.project.list);
+
+  // Gets recent projects on mount
+  useEffect(() => {
+    (async () => {
+      const result = await jiraAPI.getProjects();
+      if (result.success) {
+        dispatch(projectSlice.actions.receivedList({ projects: result.value }));
+      } else {
+        toast.error(result.error);
+      }
+    })();
+  }, [dispatch, jiraAPI]);
+
+  return (
+    <HomeScreen
+      projects={projects}
+      userClickedLogout={() => {
+        services.storage.clear();
+        dispatch({ type: LOGOUT_ACTION });
+        history.push(routes.LOGIN);
+      }}
+    />
+  );
 };
