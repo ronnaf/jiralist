@@ -1,7 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import { copyToClipboard } from '../../../util/Clipboard';
+import { getIssueLink } from '../../../util/Issue';
+import { JRawButton } from '../../core/JRawButton';
 import { SizedBox } from '../../core/SizedBox';
-import { colors, H1, Regular, Subtitle } from '../../core/Styles';
+import { ButtonText, colors, H1, Regular, Subtitle } from '../../core/Styles';
 import { HomeProps } from '../containers/HomeContainer';
 import { JHeader } from './shared/JHeader';
 import { JSidebar } from './shared/JSidebar';
@@ -27,7 +30,7 @@ export const HomeScreen = (props: HomeProps) => {
             )}
             <SizedBox height={16} />
             <H1>Issues</H1>
-            <Subtitle>Issues that are currently in TODO or IN PROGRESS</Subtitle>
+            <Subtitle>Your issues that are currently in TODO or IN PROGRESS</Subtitle>
             <SizedBox height={10} />
             {props.loadingIssues ? (
               <Regular>Loading...</Regular>
@@ -38,10 +41,22 @@ export const HomeScreen = (props: HomeProps) => {
                     <Regular>
                       [<b>{issue.key}</b>] <IssueDivide>|</IssueDivide> {issue.fields.summary}
                     </Regular>
+                    <IssueTrailing>
+                      <JRawButton>
+                        <ButtonText color={colors.shadow}>mark</ButtonText>
+                      </JRawButton>
+                      <JRawButton onClick={() => copyToClipboard(getIssueLink(issue.key))}>
+                        <ButtonText color={colors.shadow}>copy</ButtonText>
+                      </JRawButton>
+                    </IssueTrailing>
                   </Issue>
                 ))}
               </Issues>
             )}
+            <SizedBox height={30} />
+            <H1>Completed Issues</H1>
+            <Subtitle>Your issues that have been completed, but not necessarily READY FOR QA</Subtitle>
+            <SizedBox height={10} />
           </Body>
         </Main>
       </InnerContainer>
@@ -67,7 +82,7 @@ const Main = styled.div`
 `;
 
 const Body = styled.div`
-  padding-left: 20px;
+  padding-left: 1.5rem;
 `;
 
 const Flex = styled.div`
@@ -78,11 +93,30 @@ const Flex = styled.div`
   }
 `;
 
-const Issues = styled.div``;
+const Issues = styled.div`
+  margin-left: -8px;
+  & > :not(:last-child) {
+    margin-bottom: 4px;
+  }
+`;
 
-const Issue = styled.div``;
+const Issue = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 10px;
+`;
 
 const IssueDivide = styled.span`
   color: grey;
   margin: 0 2px;
+`;
+
+const IssueTrailing = styled.div`
+  display: flex;
+  align-items: center;
+  & > :not(:last-child) {
+    margin-right: 8px;
+  }
 `;

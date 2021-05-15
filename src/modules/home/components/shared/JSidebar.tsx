@@ -43,13 +43,11 @@ export const JSidebar = (props: Props) => {
 const Sidebar = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
 `;
 
 const VerticalLine = styled.div`
   width: 1px;
   background-color: ${colors.shadow};
-  height: 95%;
 `;
 
 const Projects = styled.div`
