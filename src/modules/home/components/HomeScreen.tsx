@@ -111,7 +111,6 @@ export const HomeScreen = (props: HomeProps) => {
                           issueKey={issue.key}
                           summary={issue.summary}
                           onCopy={() => copyToClipboard(getIssueLink(issue.key))}
-                          onUpdate={() => {}}
                         />
                       ))}
                     </Issues>
