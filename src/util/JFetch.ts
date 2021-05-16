@@ -6,21 +6,21 @@ type Args = {
   baseUrl: string;
   url: string;
   method?: 'POST' | 'GET';
+  /** Data for when doing a POST request */
   data?: Object;
+  /** Whether or not to prepend a cors-everywhere proxy */
+  prefixed?: boolean;
 };
 
-let requestCount = 0;
-
 export const jFetch = async (args: Args) => {
-  requestCount++;
-
+  const { prefixed = true } = args;
   const { services } = Environment.current();
   const { logger, storage } = services;
 
-  const prefix = 'https://cors-anywhere.herokuapp.com';
+  const proxy = prefixed ? 'https://cors-anywhere.herokuapp.com/' : '';
   const apiKey = storage.getToken(jStorageKeys.J_API_TOKEN);
   const init: AxiosRequestConfig = {
-    url: `${prefix}/${args.baseUrl}${args.url}`,
+    url: `${proxy}${args.baseUrl}${args.url}`,
     method: args.method || 'GET',
     data: args.data,
     headers: {
@@ -30,18 +30,19 @@ export const jFetch = async (args: Args) => {
     },
   };
 
+  const prefix = '[/' + args.url.split('/')[1].split('?')[0];
   logger.log('\n');
-  logger.log(`#${requestCount} [${init.method}] - ${args.url}`);
-  logger.log(`#${requestCount} [base] - ${args.baseUrl}`);
-  logger.log(`#${requestCount} [Authorization]:`, init.headers.Authorization);
-  logger.log(`#${requestCount} [body]:`, init.data);
+  logger.log(`${prefix}\t${init.method}] - ${args.url}`);
+  logger.log(`${prefix}\tbase] - ${args.baseUrl}`);
+  logger.log(`${prefix}\tAuthorization]:`, init.headers.Authorization);
+  logger.log(`${prefix}\tbody]:`, init.data);
 
   try {
     const response = await axios(init);
-    logger.log(`#${requestCount} [response]:`, response.data);
+    logger.log(`${prefix}\tresponse]:`, response.data);
     return response.data;
   } catch (error) {
-    logger.log(`#${requestCount} [error.json]:`, error.toJSON());
+    logger.log(`${prefix}\terror.json]:`, error.toJSON());
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
@@ -49,7 +50,7 @@ export const jFetch = async (args: Args) => {
       // logger.log(error.response.status);
       // logger.log(error.response.headers);
 
-      logger.log(`#${requestCount} [error.response]:`, error.response);
+      logger.log(`#${prefix}\terror.response]:`, error.response);
       const errorData = error.response.data;
       const errorMessage = typeof errorData === 'string' ? errorData : error.response.data.title;
       throw new Error(errorMessage);
@@ -57,11 +58,11 @@ export const jFetch = async (args: Args) => {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
       // http.ClientRequest in node.js
-      logger.log(`#${requestCount} [error.request]:`, error.request);
+      logger.log(`#${prefix}\terror.request]:`, error.request);
       throw new Error(`Unable to process request (err: ${error.message})`);
     } else {
       // Something happened in setting up the request that triggered an Error
-      logger.log(`#${requestCount} [error.message]:`, error.message);
+      logger.log(`#${prefix}\terror.message]:`, error.message);
       throw new Error(error.message);
     }
   }

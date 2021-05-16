@@ -57,6 +57,27 @@ export const HomeScreen = (props: HomeProps) => {
             <H1>Completed Issues</H1>
             <Subtitle>Your issues that have been completed, but not necessarily READY FOR QA</Subtitle>
             <SizedBox height={10} />
+            {props.loadingCompletedIssues ? (
+              <Regular>Loading...</Regular>
+            ) : (
+              <Issues>
+                {props.completedIssues.map(issue => (
+                  <Issue key={issue.id}>
+                    <Regular>
+                      [<b>{issue.key}</b>] <IssueDivide>|</IssueDivide> {issue.summary}
+                    </Regular>
+                    <IssueTrailing>
+                      <JRawButton>
+                        <ButtonText color={colors.shadow}>mark</ButtonText>
+                      </JRawButton>
+                      <JRawButton onClick={() => copyToClipboard(getIssueLink(issue.key))}>
+                        <ButtonText color={colors.shadow}>copy</ButtonText>
+                      </JRawButton>
+                    </IssueTrailing>
+                  </Issue>
+                ))}
+              </Issues>
+            )}
           </Body>
         </Main>
       </InnerContainer>

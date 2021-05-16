@@ -5,8 +5,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PersistGate } from 'redux-persist/integration/react';
 import styled from 'styled-components';
-import { arnoAPIClient } from './api/ArnoClient';
 import { jiraAPIClient } from './api/JiraAPIClient';
+import { jiralistAPIClient } from './api/JiralistAPIClient';
 import App from './App';
 import { Environment } from './Environment';
 import './index.css';
@@ -31,8 +31,8 @@ const StyledToast = styled(ToastContainer)`
 const startup = () => {
   // 1. Set the Environment.
   Environment.set({
-    api: arnoAPIClient({
-      baseURL: '',
+    api: jiralistAPIClient({
+      baseURL: 'http://localhost:3000',
     }),
     jiraAPI: jiraAPIClient({
       baseURL: 'https://smashingboxes.atlassian.net',

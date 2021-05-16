@@ -1,5 +1,5 @@
-import { API } from './api/API';
 import { JiraAPI } from './api/JiraAPI';
+import { JiralistAPI } from './api/JiralistAPI';
 import { Auth0Service } from './services/Auth0Service';
 import { LocalStorageService } from './services/LocalStorageService';
 import { LoggingService } from './services/LoggingService';
@@ -7,7 +7,7 @@ import { LoggingService } from './services/LoggingService';
 /** Change 'Arno' to product name */
 type ArnoEnvironment = {
   /** The current API. */
-  api: API;
+  api: JiralistAPI;
   jiraAPI: JiraAPI;
   /** Available external services */
   services: {
