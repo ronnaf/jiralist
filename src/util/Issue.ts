@@ -30,7 +30,7 @@ export const getCompletedIssuesGroupedByDate = (issues: CompletedIssue[]): Compl
     .sort((a, b) => {
       const dateA = new Date(a.dateCompleted);
       const dateB = new Date(b.dateCompleted);
-      return dateB.valueOf() - dateA.valueOf();
+      return dateA.valueOf() - dateB.valueOf();
     });
 
   return groupedIssues;

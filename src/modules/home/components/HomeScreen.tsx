@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { copyToClipboard } from '../../../util/Clipboard';
 import { getIssueLink } from '../../../util/Issue';
 import { JBanner } from '../../core/JBanner';
+import { JModal } from '../../core/JModal';
 import { JSpinner } from '../../core/JSpinner';
 import { SizedBox } from '../../core/SizedBox';
 import { colors, H1, Regular, Subtitle } from '../../core/Styles';
@@ -10,6 +11,9 @@ import { HomeProps } from '../containers/HomeContainer';
 import { JHeader } from './shared/JHeader';
 import { JIssueItem } from './shared/JIssueItem';
 import { JSidebar } from './shared/JSidebar';
+import DayPicker from 'react-day-picker';
+import { JRawDiv } from '../../core/JRawDiv';
+import { JButton } from '../../core/JButton';
 
 export const HomeScreen = (props: HomeProps) => {
   return (
@@ -80,7 +84,7 @@ export const HomeScreen = (props: HomeProps) => {
                     issueKey={issue.key}
                     summary={issue.fields.summary}
                     onCopy={() => copyToClipboard(getIssueLink(issue.key))}
-                    onUpdate={() => {}}
+                    onUpdate={() => props.userClickedUpdateIncompleteIssue(issue)}
                   />
                 ))}
               </Issues>
@@ -118,6 +122,21 @@ export const HomeScreen = (props: HomeProps) => {
           </Body>
         </Main>
       </InnerContainer>
+
+      {/* Datepicker modal */}
+      <JModal isOpen={props.pickerOpen}>
+        <JRawDiv>
+          <H1 color={colors.background1}>When did you complete {props.selectedIncIssue?.key}?</H1>
+          <SizedBox height={10} />
+          <PickerContainer>
+            <DayPicker
+              todayButton="Today"
+              onDayClick={props.userPickedDate}
+              onTodayButtonClick={props.userPickedDate}
+            />
+          </PickerContainer>
+        </JRawDiv>
+      </JModal>
     </Container>
   );
 };
@@ -170,4 +189,13 @@ const SectionLabel = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+`;
+
+const PickerContainer = styled.div`
+  border: 1px solid ${colors.shadow};
+  border-radius: 4px;
+
+  .DayPicker-Footer {
+    text-align: center;
+  }
 `;

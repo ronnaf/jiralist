@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { toast } from 'react-toastify';
+import { jiralistAPIClient } from '../../../api/JiralistAPIClient';
 import { CompletedIssue } from '../../../api/models/CompletedIssue';
 import { JiraIssue } from '../../../api/models/JiraIssue';
 import { JiraProject } from '../../../api/models/JiraProject';
@@ -26,10 +27,13 @@ export type HomeProps = {
   bannerShown: boolean;
   completedIssueGroups: CompletedIssueGroup[];
   incompleteIssues: JiraIssue[];
+  pickerOpen: boolean;
+  selectedIncIssue: JiraIssue | null;
   userClickedLogout: () => void;
   userChangedCurrentProject: React.Dispatch<React.SetStateAction<JiraProject | null>>;
   userToggledBanner: () => void;
-  userClickedUpdateIncompleteIssue: () => void;
+  userClickedUpdateIncompleteIssue: (issue: JiraIssue) => void;
+  userPickedDate: (date: Date) => void;
 };
 
 export const HomeContainer = () => {
@@ -44,10 +48,27 @@ export const HomeContainer = () => {
   const [bannerShown, setBannerShown] = useState(true);
   const [completedIssueGroups, setCompletedIssueGroups] = useState<CompletedIssueGroup[]>([]);
   const [incompleteIssues, setIncompleteIssues] = useState<JiraIssue[]>([]);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [selectedIncIssue, setSelectedIncIssue] = useState<JiraIssue | null>(null);
 
   const { jiraAPI, api, services } = Environment.current();
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const getCompletedIssues = useCallback(
+    async (projectKey: string, assigneeEmail: string) => {
+      setLoadingCompletedIssues(true);
+      const result = await api.getCompletedIssues({ projectKey, assigneeEmail });
+      setLoadingCompletedIssues(false);
+      if (result.success) {
+        setCompletedIssues(result.value);
+        setCompletedIssueGroups(getCompletedIssuesGroupedByDate(result.value));
+      } else {
+        toast.error(result.error);
+      }
+    },
+    [api]
+  );
 
   // Gets current user info on mount
   useEffect(() => {
@@ -96,21 +117,8 @@ export const HomeContainer = () => {
   // Listen to changes in current project, and fetches completed issues of that project
   useEffect(() => {
     if (!currentProject?.key || !user?.emailAddress) return;
-    (async () => {
-      setLoadingCompletedIssues(true);
-      const result = await api.getCompletedIssues({
-        assigneeEmail: currentProject.key,
-        projectKey: user.emailAddress,
-      });
-      setLoadingCompletedIssues(false);
-      if (result.success) {
-        setCompletedIssues(result.value);
-        setCompletedIssueGroups(getCompletedIssuesGroupedByDate(result.value));
-      } else {
-        toast.error(result.error);
-      }
-    })();
-  }, [api, currentProject?.key, user?.emailAddress]);
+    getCompletedIssues(currentProject.key, user.emailAddress);
+  }, [api, currentProject?.key, getCompletedIssues, user?.emailAddress]);
 
   // Fetches the incomplete issues of the current project
   useEffect(() => {
@@ -134,6 +142,8 @@ export const HomeContainer = () => {
       bannerShown={bannerShown}
       completedIssueGroups={completedIssueGroups}
       incompleteIssues={incompleteIssues}
+      pickerOpen={pickerOpen}
+      selectedIncIssue={selectedIncIssue}
       userChangedCurrentProject={setCurrentProject}
       userClickedLogout={() => {
         services.storage.clear();
@@ -141,7 +151,32 @@ export const HomeContainer = () => {
         history.push(routes.LOGIN);
       }}
       userToggledBanner={() => setBannerShown(!bannerShown)}
-      userClickedUpdateIncompleteIssue={() => {}}
+      userClickedUpdateIncompleteIssue={issue => {
+        setSelectedIncIssue(issue);
+        setPickerOpen(true);
+      }}
+      userPickedDate={date => {
+        setPickerOpen(false);
+        if (selectedIncIssue && currentProject) {
+          const payload = {
+            id: selectedIncIssue.id,
+            key: selectedIncIssue.key,
+            projectKey: currentProject.key,
+            summary: selectedIncIssue.fields.summary,
+            assigneeEmail: selectedIncIssue.fields.assignee.emailAddress,
+            dateCompleted: date.toJSON(),
+          };
+          api
+            .createCompletedIssue(payload)
+            .then(result => {
+              toast.success('Successfully marked as completed!');
+              getCompletedIssues(payload.projectKey, payload.assigneeEmail);
+            })
+            .catch(e => {
+              toast.error(e.message || 'Failed to update issue');
+            });
+        }
+      }}
     />
   );
 };
