@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { copyToClipboard } from '../../../util/Clipboard';
 import { getIssueLink } from '../../../util/Issue';
-import { JRawButton } from '../../core/JRawButton';
+import { JBanner } from '../../core/JBanner';
 import { SizedBox } from '../../core/SizedBox';
-import { ButtonText, colors, H1, Regular, Subtitle } from '../../core/Styles';
+import { colors, H1, Regular, Subtitle } from '../../core/Styles';
 import { HomeProps } from '../containers/HomeContainer';
 import { JHeader } from './shared/JHeader';
 import { JIssueItem } from './shared/JIssueItem';
@@ -23,6 +23,21 @@ export const HomeScreen = (props: HomeProps) => {
             handleProjectChange={props.userChangedCurrentProject}
           />
           <Body>
+            {props.bannerShown && (
+              <React.Fragment>
+                <JBanner
+                  title="Getting a 'See /corsdemo for more info' error?"
+                  message={
+                    <span>
+                      Go to <a href="https://cors-anywhere.herokuapp.com/">https://cors-anywhere.herokuapp.com/</a> and
+                      click `<b>Request temporary access to the demo server</b>`
+                    </span>
+                  }
+                  onClose={props.userToggledBanner}
+                />
+                <SizedBox height={16} />
+              </React.Fragment>
+            )}
             {props.currentProject && (
               <Flex>
                 <H1>{props.currentProject?.name}</H1>

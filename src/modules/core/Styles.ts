@@ -14,6 +14,7 @@ export type JTextProps = {
 
 export const Regular = styled.div<JTextProps>`
   font-size: 16px;
+  font-weight: ${p => p.weight};
   color: ${p => p.color || colors.background2};
 `;
 

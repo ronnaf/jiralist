@@ -23,8 +23,10 @@ export type HomeProps = {
   loadingProjects: boolean;
   completedIssues: CompletedIssue[];
   loadingCompletedIssues: boolean;
+  bannerShown: boolean;
   userClickedLogout: () => void;
   userChangedCurrentProject: React.Dispatch<React.SetStateAction<JiraProject | null>>;
+  userToggledBanner: () => void;
 };
 
 export const HomeContainer = () => {
@@ -36,6 +38,7 @@ export const HomeContainer = () => {
   const [loadingProjects, setLoadingProjects] = useState(false);
   const [completedIssues, setCompletedIssues] = useState<CompletedIssue[]>([]);
   const [loadingCompletedIssues, setLoadingCompletedIssues] = useState(false);
+  const [bannerShown, setBannerShown] = useState(true);
 
   const { jiraAPI, api, services } = Environment.current();
   const dispatch = useDispatch();
@@ -115,12 +118,14 @@ export const HomeContainer = () => {
       loadingIssues={loadingIssues}
       loadingProjects={loadingProjects}
       loadingCompletedIssues={loadingCompletedIssues}
+      bannerShown={bannerShown}
       userChangedCurrentProject={setCurrentProject}
       userClickedLogout={() => {
         services.storage.clear();
         dispatch({ type: LOGOUT_ACTION });
         history.push(routes.LOGIN);
       }}
+      userToggledBanner={() => setBannerShown(!bannerShown)}
     />
   );
 };
