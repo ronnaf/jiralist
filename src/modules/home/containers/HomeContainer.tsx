@@ -25,9 +25,11 @@ export type HomeProps = {
   loadingCompletedIssues: boolean;
   bannerShown: boolean;
   completedIssueGroups: CompletedIssueGroup[];
+  incompleteIssues: JiraIssue[];
   userClickedLogout: () => void;
   userChangedCurrentProject: React.Dispatch<React.SetStateAction<JiraProject | null>>;
   userToggledBanner: () => void;
+  userClickedUpdateIncompleteIssue: () => void;
 };
 
 export const HomeContainer = () => {
@@ -41,6 +43,7 @@ export const HomeContainer = () => {
   const [loadingCompletedIssues, setLoadingCompletedIssues] = useState(false);
   const [bannerShown, setBannerShown] = useState(true);
   const [completedIssueGroups, setCompletedIssueGroups] = useState<CompletedIssueGroup[]>([]);
+  const [incompleteIssues, setIncompleteIssues] = useState<JiraIssue[]>([]);
 
   const { jiraAPI, api, services } = Environment.current();
   const dispatch = useDispatch();
@@ -75,8 +78,7 @@ export const HomeContainer = () => {
     })();
   }, [dispatch, jiraAPI]);
 
-  // Listens to changes in current project,
-  // and fetches issues of that project
+  // Listens to changes in current project, and fetches issues of that project
   useEffect(() => {
     if (!currentProject?.key) return;
     (async () => {
@@ -91,8 +93,7 @@ export const HomeContainer = () => {
     })();
   }, [jiraAPI, currentProject?.key]);
 
-  // Listen to changes in current project,
-  // and fetches completed issues of that project
+  // Listen to changes in current project, and fetches completed issues of that project
   useEffect(() => {
     if (!currentProject?.key || !user?.emailAddress) return;
     (async () => {
@@ -111,6 +112,15 @@ export const HomeContainer = () => {
     })();
   }, [api, currentProject?.key, user?.emailAddress]);
 
+  // Fetches the incomplete issues of the current project
+  useEffect(() => {
+    if (!currentProject?.key) return;
+    const incompleteIssues = issues.filter(issue => {
+      return completedIssues.findIndex(i => i.id === issue.id) === -1;
+    });
+    setIncompleteIssues(incompleteIssues);
+  }, [currentProject?.key, completedIssues, issues]);
+
   return (
     <HomeScreen
       projects={projects}
@@ -123,6 +133,7 @@ export const HomeContainer = () => {
       loadingCompletedIssues={loadingCompletedIssues}
       bannerShown={bannerShown}
       completedIssueGroups={completedIssueGroups}
+      incompleteIssues={incompleteIssues}
       userChangedCurrentProject={setCurrentProject}
       userClickedLogout={() => {
         services.storage.clear();
@@ -130,6 +141,7 @@ export const HomeContainer = () => {
         history.push(routes.LOGIN);
       }}
       userToggledBanner={() => setBannerShown(!bannerShown)}
+      userClickedUpdateIncompleteIssue={() => {}}
     />
   );
 };

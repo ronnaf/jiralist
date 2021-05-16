@@ -1,9 +1,9 @@
 import React from 'react';
-import { CubeSpinner } from 'react-spinners-kit';
 import styled from 'styled-components';
 import { JiraProject } from '../../../../api/models/JiraProject';
 import { JButton } from '../../../core/JButton';
 import { JRawButton } from '../../../core/JRawButton';
+import { JSpinner } from '../../../core/JSpinner';
 import { SizedBox } from '../../../core/SizedBox';
 import { colors, H1, Regular } from '../../../core/Styles';
 
@@ -20,7 +20,7 @@ export const JSidebar = (props: Props) => {
       <div>
         <Flex>
           <H1>Recent Projects</H1>
-          {props.loading && <CubeSpinner backColor={colors.shadow} frontColor={colors.background2} size={16} />}
+          {props.loading && <JSpinner />}
         </Flex>
         <SizedBox height={26} />
         <Projects>

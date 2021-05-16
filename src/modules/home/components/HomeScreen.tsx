@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { copyToClipboard } from '../../../util/Clipboard';
 import { getIssueLink } from '../../../util/Issue';
 import { JBanner } from '../../core/JBanner';
+import { JSpinner } from '../../core/JSpinner';
 import { SizedBox } from '../../core/SizedBox';
 import { colors, H1, Regular, Subtitle } from '../../core/Styles';
 import { HomeProps } from '../containers/HomeContainer';
@@ -48,55 +49,71 @@ export const HomeScreen = (props: HomeProps) => {
             )}
             {/* Issues */}
             <div>
-              <H1>Issues</H1>
-              <Subtitle>Your issues that are currently in TODO or IN PROGRESS in the Jira Board</Subtitle>
+              <SectionLabel>
+                <div>
+                  <H1>Issues</H1>
+                  <Subtitle>Your issues that are currently in TODO or IN PROGRESS in the Jira Board</Subtitle>
+                </div>
+                {props.loadingIssues && <JSpinner />}
+              </SectionLabel>
               <SizedBox height={10} />
-              {props.loadingIssues ? (
-                <Regular>Loading...</Regular>
-              ) : (
-                <Issues>
-                  {props.issues.map(issue => (
-                    <JIssueItem
-                      issueKey={issue.key}
-                      summary={issue.fields.summary}
-                      onCopy={() => copyToClipboard(getIssueLink(issue.key))}
-                    />
-                  ))}
-                </Issues>
-              )}
+              <Issues>
+                {props.issues.map(issue => (
+                  <JIssueItem
+                    key={issue.id}
+                    issueKey={issue.key}
+                    summary={issue.fields.summary}
+                    onCopy={() => copyToClipboard(getIssueLink(issue.key))}
+                  />
+                ))}
+              </Issues>
             </div>
-            {/* Completed issues */}
+            {/* Incomplete issues */}
             <div>
               <H1>Incomplete Issues</H1>
               <Subtitle>Issues that are assigned to you that you can work on</Subtitle>
+              <SizedBox height={10} />
+              <Issues>
+                {props.incompleteIssues.map(issue => (
+                  <JIssueItem
+                    key={issue.id}
+                    issueKey={issue.key}
+                    summary={issue.fields.summary}
+                    onCopy={() => copyToClipboard(getIssueLink(issue.key))}
+                    onUpdate={() => {}}
+                  />
+                ))}
+              </Issues>
             </div>
             {/* Completed issues */}
             <div>
-              <H1>Completed Issues</H1>
-              <Subtitle>Issues that you've completed, but not necessarily READY FOR QA</Subtitle>
+              <SectionLabel>
+                <div>
+                  <H1>Completed Issues</H1>
+                  <Subtitle>Issues that you've completed, but not necessarily READY FOR QA</Subtitle>
+                </div>
+                {props.loadingCompletedIssues && <JSpinner />}
+              </SectionLabel>
               <SizedBox height={10} />
-              {props.loadingCompletedIssues ? (
-                <Regular>Loading...</Regular>
-              ) : (
-                <IssueGroups>
-                  {props.completedIssueGroups.map(issueGroup => (
-                    <div key={issueGroup.dateCompletedString}>
-                      <Regular weight="bold">{issueGroup.dateCompletedString}</Regular>
-                      <SizedBox height={4} />
-                      <Issues>
-                        {issueGroup.issues.map(issue => (
-                          <JIssueItem
-                            issueKey={issue.key}
-                            summary={issue.summary}
-                            onCopy={() => copyToClipboard(getIssueLink(issue.key))}
-                            onUpdate={() => {}}
-                          />
-                        ))}
-                      </Issues>
-                    </div>
-                  ))}
-                </IssueGroups>
-              )}
+              <IssueGroups>
+                {props.completedIssueGroups.map(issueGroup => (
+                  <div key={issueGroup.dateCompletedString}>
+                    <Regular weight="bold">{issueGroup.dateCompletedString}</Regular>
+                    <SizedBox height={4} />
+                    <Issues>
+                      {issueGroup.issues.map(issue => (
+                        <JIssueItem
+                          key={issue.id}
+                          issueKey={issue.key}
+                          summary={issue.summary}
+                          onCopy={() => copyToClipboard(getIssueLink(issue.key))}
+                          onUpdate={() => {}}
+                        />
+                      ))}
+                    </Issues>
+                  </div>
+                ))}
+              </IssueGroups>
             </div>
           </Body>
         </Main>
@@ -147,4 +164,10 @@ const IssueGroups = styled.div`
   & > :not(:last-child) {
     margin-bottom: 16px;
   }
+`;
+
+const SectionLabel = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
