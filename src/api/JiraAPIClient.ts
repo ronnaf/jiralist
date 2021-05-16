@@ -1,5 +1,5 @@
-import { jFetch } from '../util/JFetch';
-import { Result } from '../util/Result';
+import { jFetch } from '../util/JFetch.util';
+import { Result } from '../util/Result.util';
 import { JiraAPI } from './JiraAPI';
 
 export const jiraAPIClient = (options: {

@@ -1,4 +1,4 @@
-import { Result } from '../util/Result';
+import { Result } from '../util/Result.util';
 import { API } from './API';
 
 const defaultAPI = (delay: number): API => ({

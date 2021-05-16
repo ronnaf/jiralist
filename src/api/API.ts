@@ -1,4 +1,4 @@
-import { Result } from '../util/Result';
+import { Result } from '../util/Result.util';
 import { User } from './models/User';
 
 /** An asynchronous API describing the product's REST API */

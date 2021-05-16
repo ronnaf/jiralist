@@ -1,4 +1,4 @@
-import { Result } from '../util/Result';
+import { Result } from '../util/Result.util';
 import { JiraIssue } from './models/JiraIssue';
 import { JiraProject } from './models/JiraProject';
 import { JiraUser } from './models/JiraUser';

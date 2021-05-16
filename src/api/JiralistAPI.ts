@@ -1,4 +1,4 @@
-import { Result } from '../util/Result';
+import { Result } from '../util/Result.util';
 import { CompletedIssue } from './models/CompletedIssue';
 
 /** An asynchronous API describing the product's REST API */

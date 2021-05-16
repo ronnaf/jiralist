@@ -1,8 +1,8 @@
 import React from 'react';
 import DayPicker from 'react-day-picker';
 import styled from 'styled-components';
-import { copyToClipboard } from '../../../util/Clipboard';
-import { getIssueLink } from '../../../util/Issue';
+import { copyToClipboard } from '../../../util/Clipboard.util';
+import { getIssueLink } from '../../../util/Issue.util';
 import { JBanner } from '../../core/JBanner';
 import { JModal } from '../../core/JModal';
 import { JRawDiv } from '../../core/JRawDiv';

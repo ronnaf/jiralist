@@ -11,7 +11,7 @@ import { projectSlice } from '../../../model/projectSlice';
 import { LOGOUT_ACTION, RootState } from '../../../model/store';
 import { userSlice } from '../../../model/userSlice';
 import { routes } from '../../../routes';
-import { CompletedIssueGroup, getCompletedIssuesGroupedByDate } from '../../../util/Issue';
+import { CompletedIssueGroup, getCompletedIssuesGroupedByDate } from '../../../util/Issue.util';
 import { HomeScreen } from '../components/HomeScreen';
 
 export type HomeProps = {

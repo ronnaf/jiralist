@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { colorLuminance } from '../../util/Neumorphism';
+import { colorLuminance } from '../../util/Neumorphism.util';
 
 export const JRawInsetDiv = styled.div<{ background: string }>`
   background: ${p => p.background};
