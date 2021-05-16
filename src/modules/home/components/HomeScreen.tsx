@@ -39,7 +39,7 @@ export const HomeScreen = (props: HomeProps) => {
               <Issues>
                 {props.issues.map(issue => (
                   <JIssueItem
-                    key={issue.key}
+                    issueKey={issue.key}
                     summary={issue.fields.summary}
                     onCopy={() => copyToClipboard(getIssueLink(issue.key))}
                     onMark={() => {}}
@@ -57,7 +57,7 @@ export const HomeScreen = (props: HomeProps) => {
               <Issues>
                 {props.completedIssues.map(issue => (
                   <JIssueItem
-                    key={issue.key}
+                    issueKey={issue.key}
                     summary={issue.summary}
                     onCopy={() => copyToClipboard(getIssueLink(issue.key))}
                     onMark={() => {}}

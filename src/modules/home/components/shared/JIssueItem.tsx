@@ -4,7 +4,7 @@ import { JRawButton } from '../../../core/JRawButton';
 import { ButtonText, colors, Regular } from '../../../core/Styles';
 
 type Props = {
-  key: string;
+  issueKey: string;
   summary: string;
   onMark: () => void;
   onCopy: () => void;
@@ -14,7 +14,7 @@ export const JIssueItem = (props: Props) => {
   return (
     <Issue>
       <Regular>
-        [<b>{props.key}</b>] <IssueDivide>|</IssueDivide> {props.summary}
+        [<b>{props.issueKey}</b>] <IssueDivide>|</IssueDivide> {props.summary}
       </Regular>
       <IssueTrailing>
         <JRawButton onClick={props.onMark}>
