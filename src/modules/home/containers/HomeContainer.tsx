@@ -94,12 +94,12 @@ export const HomeContainer = () => {
   // Listen to changes in current project,
   // and fetches completed issues of that project
   useEffect(() => {
-    // if (!currentProject?.key || !user?.emailAddress) return;
+    if (!currentProject?.key || !user?.emailAddress) return;
     (async () => {
       setLoadingCompletedIssues(true);
       const result = await api.getCompletedIssues({
-        assigneeEmail: 'ronna.firmo@smashingboxes.com',
-        projectKey: 'RH',
+        assigneeEmail: currentProject.key,
+        projectKey: user.emailAddress,
       });
       setLoadingCompletedIssues(false);
       if (result.success) {

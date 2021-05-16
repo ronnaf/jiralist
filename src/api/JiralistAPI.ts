@@ -8,4 +8,6 @@ export type JiralistAPI = {
     assigneeEmail: string;
     projectKey: string;
   }) => Promise<Result<CompletedIssue[], undefined>>;
+  /** Creats a new completed issue entry */
+  createCompletedIssue: (payload: CompletedIssue) => Promise<Result<CompletedIssue, undefined>>;
 };

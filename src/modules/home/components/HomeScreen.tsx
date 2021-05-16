@@ -60,7 +60,6 @@ export const HomeScreen = (props: HomeProps) => {
                       issueKey={issue.key}
                       summary={issue.fields.summary}
                       onCopy={() => copyToClipboard(getIssueLink(issue.key))}
-                      onMark={() => {}}
                     />
                   ))}
                 </Issues>
@@ -90,7 +89,7 @@ export const HomeScreen = (props: HomeProps) => {
                             issueKey={issue.key}
                             summary={issue.summary}
                             onCopy={() => copyToClipboard(getIssueLink(issue.key))}
-                            onMark={() => {}}
+                            onUpdate={() => {}}
                           />
                         ))}
                       </Issues>

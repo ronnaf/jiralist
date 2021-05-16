@@ -33,5 +33,19 @@ export const jiralistAPIClient = (options: {
         return Result.failure(e.message);
       }
     },
+    createCompletedIssue: async payload => {
+      try {
+        const result = await jFetch({
+          method: 'POST',
+          baseUrl: options.baseURL,
+          url: `/issues`,
+          prefixed: false,
+          data: payload,
+        });
+        return Result.success(result);
+      } catch (e) {
+        return Result.failure(e.message);
+      }
+    },
   };
 };

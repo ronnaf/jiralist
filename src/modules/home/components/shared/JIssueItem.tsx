@@ -6,7 +6,7 @@ import { ButtonText, colors, Regular } from '../../../core/Styles';
 type Props = {
   issueKey: string;
   summary: string;
-  onMark: () => void;
+  onUpdate?: () => void;
   onCopy: () => void;
 };
 
@@ -17,9 +17,11 @@ export const JIssueItem = (props: Props) => {
         [<b>{props.issueKey}</b>] <IssueDivide>|</IssueDivide> {props.summary}
       </Regular>
       <IssueTrailing>
-        <JRawButton onClick={props.onMark}>
-          <ButtonText color={colors.shadow}>mark</ButtonText>
-        </JRawButton>
+        {!!props.onUpdate && (
+          <JRawButton onClick={props.onUpdate}>
+            <ButtonText color={colors.shadow}>update</ButtonText>
+          </JRawButton>
+        )}
         <JRawButton onClick={props.onCopy}>
           <ButtonText color={colors.shadow}>copy</ButtonText>
         </JRawButton>

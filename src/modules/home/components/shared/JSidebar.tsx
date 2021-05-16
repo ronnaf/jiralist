@@ -1,4 +1,5 @@
 import React from 'react';
+import { CubeSpinner } from 'react-spinners-kit';
 import styled from 'styled-components';
 import { JiraProject } from '../../../../api/models/JiraProject';
 import { JButton } from '../../../core/JButton';
@@ -17,21 +18,20 @@ export const JSidebar = (props: Props) => {
   return (
     <Sidebar>
       <div>
-        <H1>Recent Projects</H1>
+        <Flex>
+          <H1>Recent Projects</H1>
+          {props.loading && <CubeSpinner backColor={colors.shadow} frontColor={colors.background2} size={16} />}
+        </Flex>
         <SizedBox height={26} />
-        {props.loading ? (
-          <Regular>Loading...</Regular>
-        ) : (
-          <Projects>
-            {props.projects.map(project => (
-              <div key={project.id}>
-                <JRawButton onClick={() => props.handleProjectChange(project)}>
-                  <Regular>{project.name}</Regular>
-                </JRawButton>
-              </div>
-            ))}
-          </Projects>
-        )}
+        <Projects>
+          {props.projects.map(project => (
+            <div key={project.id}>
+              <JRawButton onClick={() => props.handleProjectChange(project)}>
+                <Regular>{project.name}</Regular>
+              </JRawButton>
+            </div>
+          ))}
+        </Projects>
         <SizedBox height={26} />
         <JButton title="Log out" onClick={props.handleLogout} />
       </div>
@@ -53,5 +53,14 @@ const VerticalLine = styled.div`
 const Projects = styled.div`
   & > :not(:last-child) {
     margin-bottom: 4px;
+  }
+`;
+
+const Flex = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  & > :not(:last-child) {
+    margin-right: 16px;
   }
 `;
