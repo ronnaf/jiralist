@@ -7,6 +7,7 @@ import { SizedBox } from '../../core/SizedBox';
 import { ButtonText, colors, H1, Regular, Subtitle } from '../../core/Styles';
 import { HomeProps } from '../containers/HomeContainer';
 import { JHeader } from './shared/JHeader';
+import { JIssueItem } from './shared/JIssueItem';
 import { JSidebar } from './shared/JSidebar';
 
 export const HomeScreen = (props: HomeProps) => {
@@ -37,19 +38,12 @@ export const HomeScreen = (props: HomeProps) => {
             ) : (
               <Issues>
                 {props.issues.map(issue => (
-                  <Issue key={issue.id}>
-                    <Regular>
-                      [<b>{issue.key}</b>] <IssueDivide>|</IssueDivide> {issue.fields.summary}
-                    </Regular>
-                    <IssueTrailing>
-                      <JRawButton>
-                        <ButtonText color={colors.shadow}>mark</ButtonText>
-                      </JRawButton>
-                      <JRawButton onClick={() => copyToClipboard(getIssueLink(issue.key))}>
-                        <ButtonText color={colors.shadow}>copy</ButtonText>
-                      </JRawButton>
-                    </IssueTrailing>
-                  </Issue>
+                  <JIssueItem
+                    key={issue.key}
+                    summary={issue.fields.summary}
+                    onCopy={() => copyToClipboard(getIssueLink(issue.key))}
+                    onMark={() => {}}
+                  />
                 ))}
               </Issues>
             )}
@@ -62,19 +56,12 @@ export const HomeScreen = (props: HomeProps) => {
             ) : (
               <Issues>
                 {props.completedIssues.map(issue => (
-                  <Issue key={issue.id}>
-                    <Regular>
-                      [<b>{issue.key}</b>] <IssueDivide>|</IssueDivide> {issue.summary}
-                    </Regular>
-                    <IssueTrailing>
-                      <JRawButton>
-                        <ButtonText color={colors.shadow}>mark</ButtonText>
-                      </JRawButton>
-                      <JRawButton onClick={() => copyToClipboard(getIssueLink(issue.key))}>
-                        <ButtonText color={colors.shadow}>copy</ButtonText>
-                      </JRawButton>
-                    </IssueTrailing>
-                  </Issue>
+                  <JIssueItem
+                    key={issue.key}
+                    summary={issue.summary}
+                    onCopy={() => copyToClipboard(getIssueLink(issue.key))}
+                    onMark={() => {}}
+                  />
                 ))}
               </Issues>
             )}
