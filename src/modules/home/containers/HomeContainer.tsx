@@ -1,4 +1,3 @@
-import { profile } from 'console';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -12,6 +11,7 @@ import { projectSlice } from '../../../model/projectSlice';
 import { LOGOUT_ACTION, RootState } from '../../../model/store';
 import { userSlice } from '../../../model/userSlice';
 import { routes } from '../../../routes';
+import { CompletedIssueGroup, getCompletedIssuesGroupedByDate } from '../../../util/Issue';
 import { HomeScreen } from '../components/HomeScreen';
 
 export type HomeProps = {
@@ -24,6 +24,7 @@ export type HomeProps = {
   completedIssues: CompletedIssue[];
   loadingCompletedIssues: boolean;
   bannerShown: boolean;
+  completedIssueGroups: CompletedIssueGroup[];
   userClickedLogout: () => void;
   userChangedCurrentProject: React.Dispatch<React.SetStateAction<JiraProject | null>>;
   userToggledBanner: () => void;
@@ -39,6 +40,7 @@ export const HomeContainer = () => {
   const [completedIssues, setCompletedIssues] = useState<CompletedIssue[]>([]);
   const [loadingCompletedIssues, setLoadingCompletedIssues] = useState(false);
   const [bannerShown, setBannerShown] = useState(true);
+  const [completedIssueGroups, setCompletedIssueGroups] = useState<CompletedIssueGroup[]>([]);
 
   const { jiraAPI, api, services } = Environment.current();
   const dispatch = useDispatch();
@@ -92,16 +94,17 @@ export const HomeContainer = () => {
   // Listen to changes in current project,
   // and fetches completed issues of that project
   useEffect(() => {
-    if (!currentProject?.key || !user?.emailAddress) return;
+    // if (!currentProject?.key || !user?.emailAddress) return;
     (async () => {
       setLoadingCompletedIssues(true);
       const result = await api.getCompletedIssues({
-        assigneeEmail: user.emailAddress,
-        projectKey: currentProject.key,
+        assigneeEmail: 'ronna.firmo@smashingboxes.com',
+        projectKey: 'RH',
       });
       setLoadingCompletedIssues(false);
       if (result.success) {
         setCompletedIssues(result.value);
+        setCompletedIssueGroups(getCompletedIssuesGroupedByDate(result.value));
       } else {
         toast.error(result.error);
       }
@@ -119,6 +122,7 @@ export const HomeContainer = () => {
       loadingProjects={loadingProjects}
       loadingCompletedIssues={loadingCompletedIssues}
       bannerShown={bannerShown}
+      completedIssueGroups={completedIssueGroups}
       userChangedCurrentProject={setCurrentProject}
       userClickedLogout={() => {
         services.storage.clear();

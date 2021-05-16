@@ -69,16 +69,24 @@ export const HomeScreen = (props: HomeProps) => {
             {props.loadingCompletedIssues ? (
               <Regular>Loading...</Regular>
             ) : (
-              <Issues>
-                {props.completedIssues.map(issue => (
-                  <JIssueItem
-                    issueKey={issue.key}
-                    summary={issue.summary}
-                    onCopy={() => copyToClipboard(getIssueLink(issue.key))}
-                    onMark={() => {}}
-                  />
+              <IssueGroups>
+                {props.completedIssueGroups.map(issueGroup => (
+                  <div key={issueGroup.dateCompletedString}>
+                    <Regular weight="bold">{issueGroup.dateCompletedString}</Regular>
+                    <SizedBox height={4} />
+                    <Issues>
+                      {issueGroup.issues.map(issue => (
+                        <JIssueItem
+                          issueKey={issue.key}
+                          summary={issue.summary}
+                          onCopy={() => copyToClipboard(getIssueLink(issue.key))}
+                          onMark={() => {}}
+                        />
+                      ))}
+                    </Issues>
+                  </div>
                 ))}
-              </Issues>
+              </IssueGroups>
             )}
           </Body>
         </Main>
@@ -117,29 +125,13 @@ const Flex = styled.div`
 `;
 
 const Issues = styled.div`
-  margin-left: -8px;
   & > :not(:last-child) {
     margin-bottom: 4px;
   }
 `;
 
-const Issue = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: rgba(255, 255, 255, 0.05);
-  padding: 10px;
-`;
-
-const IssueDivide = styled.span`
-  color: grey;
-  margin: 0 2px;
-`;
-
-const IssueTrailing = styled.div`
-  display: flex;
-  align-items: center;
+const IssueGroups = styled.div`
   & > :not(:last-child) {
-    margin-right: 8px;
+    margin-bottom: 16px;
   }
 `;
