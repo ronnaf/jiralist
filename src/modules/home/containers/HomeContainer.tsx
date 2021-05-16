@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { toast } from 'react-toastify';
-import { jiralistAPIClient } from '../../../api/JiralistAPIClient';
 import { CompletedIssue } from '../../../api/models/CompletedIssue';
 import { JiraIssue } from '../../../api/models/JiraIssue';
 import { JiraProject } from '../../../api/models/JiraProject';

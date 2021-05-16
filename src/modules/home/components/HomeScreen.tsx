@@ -1,9 +1,11 @@
 import React from 'react';
+import DayPicker from 'react-day-picker';
 import styled from 'styled-components';
 import { copyToClipboard } from '../../../util/Clipboard';
 import { getIssueLink } from '../../../util/Issue';
 import { JBanner } from '../../core/JBanner';
 import { JModal } from '../../core/JModal';
+import { JRawDiv } from '../../core/JRawDiv';
 import { JSpinner } from '../../core/JSpinner';
 import { SizedBox } from '../../core/SizedBox';
 import { colors, H1, Regular, Subtitle } from '../../core/Styles';
@@ -11,9 +13,6 @@ import { HomeProps } from '../containers/HomeContainer';
 import { JHeader } from './shared/JHeader';
 import { JIssueItem } from './shared/JIssueItem';
 import { JSidebar } from './shared/JSidebar';
-import DayPicker from 'react-day-picker';
-import { JRawDiv } from '../../core/JRawDiv';
-import { JButton } from '../../core/JButton';
 
 export const HomeScreen = (props: HomeProps) => {
   return (
