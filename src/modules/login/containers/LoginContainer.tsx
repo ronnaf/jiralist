@@ -32,7 +32,7 @@ export const LoginContainer = () => {
   useEffect(() => {
     const isAuthenticated = !!services.storage.getToken(jStorageKeys.J_API_TOKEN);
     if (isAuthenticated) {
-      history.replace(routes.HOME);
+      history.replace(routes.PROJECTS);
     }
   }, [history, services.storage]);
 
@@ -48,7 +48,7 @@ export const LoginContainer = () => {
 
         const base64ApiKey = btoa(`${formState.email}:${formState.apiKey}`);
         services.storage.storeToken(jStorageKeys.J_API_TOKEN, base64ApiKey);
-        history.push(routes.HOME);
+        history.push(routes.PROJECTS);
       }}
     />
   );

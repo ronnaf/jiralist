@@ -13,10 +13,10 @@ const App = () => {
     <Router>
       <Switch>
         <Route exact path="/">
-          <Redirect to={{ pathname: routes.HOME }} />
+          <Redirect to={{ pathname: routes.PROJECTS }} />
         </Route>
         <Route path={routes.LOGIN} component={LoginContainer} />
-        <PrivateRoute path={routes.HOME} component={HomeContainer} />
+        <PrivateRoute path={routes.PROJECTS} component={HomeContainer} />
         <PrivateRoute path={routes.TODO__ADD} component={TodoAddContainer} />
         <PrivateRoute path={routes.TODO__LIST} component={TodoListContainer} />
       </Switch>
