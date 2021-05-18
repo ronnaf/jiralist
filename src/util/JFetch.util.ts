@@ -17,7 +17,7 @@ export const jFetch = async (args: Args) => {
   const { services } = Environment.current();
   const { logger, storage } = services;
 
-  const proxy = prefixed ? 'https://cors-anywhere.herokuapp.com/' : '';
+  const proxy = prefixed ? process.env.REACT_APP_CORS_PROXY : '';
   const apiKey = storage.getToken(jStorageKeys.J_API_TOKEN);
   const init: AxiosRequestConfig = {
     url: `${proxy}${args.baseUrl}${args.url}`,

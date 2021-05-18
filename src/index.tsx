@@ -33,10 +33,10 @@ const startup = () => {
   // 1. Set the Environment.
   Environment.set({
     api: jiralistAPIClient({
-      baseURL: 'http://localhost:3000',
+      baseURL: process.env.REACT_APP_JIRALIST_API_BASE_URL || '',
     }),
     jiraAPI: jiraAPIClient({
-      baseURL: 'https://smashingboxes.atlassian.net',
+      baseURL: process.env.REACT_APP_JIRA_API_BASE_URL || '',
     }),
     services: {
       auth: auth0Service({ clientID: '', domain: '' }),

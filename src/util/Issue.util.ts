@@ -6,7 +6,7 @@ export type GrabbedIssueGroup = {
   issues: GrabbedIssue[];
 };
 
-export const getIssueLink = (issueKey: string) => `https://smashingboxes.atlassian.net/browse/${issueKey}`;
+export const getIssueLink = (issueKey: string) => `${process.env.REACT_APP_JIRA_API_BASE_URL}/browse/${issueKey}`;
 
 export const getGrabbedIssuesGroupedByDate = (issues: GrabbedIssue[]): GrabbedIssueGroup[] => {
   // { [date]: [{...grabbedIssue}] }

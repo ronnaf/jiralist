@@ -43,8 +43,8 @@ export const HomeScreen = (props: HomeProps) => {
                 title="Getting a 'See /corsdemo for more info' error?"
                 message={
                   <span>
-                    Go to <a href="https://cors-anywhere.herokuapp.com/">https://cors-anywhere.herokuapp.com/</a> and
-                    click `<b>Request temporary access to the demo server</b>`
+                    Go to <a href={process.env.REACT_APP_CORS_PROXY}>{process.env.REACT_APP_CORS_PROXY}</a> and click `
+                    <b>Request temporary access to the demo server</b>`
                   </span>
                 }
                 onClose={props.userToggledBanner}
