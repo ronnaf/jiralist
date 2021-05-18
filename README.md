@@ -1,5 +1,8 @@
 # jiralist
 
+![jiralist_login](https://user-images.githubusercontent.com/32459751/118410855-2b3a0500-b6c4-11eb-8973-aff1d2b47259.png)
+![jiralist_home](https://user-images.githubusercontent.com/32459751/118410856-2ffeb900-b6c4-11eb-97f6-705a9e2350e2.png)
+
 > react/typescript template based on the [arno](https://github.com/smashingboxes/arno) react native template.
 
 **rough idea:**  
