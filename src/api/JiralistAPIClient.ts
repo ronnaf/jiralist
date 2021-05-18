@@ -12,7 +12,7 @@ export const jiralistAPIClient = (options: {
   baseURL: string;
 }): JiralistAPI => {
   return {
-    getCompletedIssues: async payload => {
+    getGrabbedIssues: async payload => {
       try {
         const { assigneeEmail, projectKey } = payload;
         const filter = encodeURIComponent(
@@ -33,12 +33,26 @@ export const jiralistAPIClient = (options: {
         return Result.failure(e.message);
       }
     },
-    createCompletedIssue: async payload => {
+    createGrabbedIssue: async payload => {
       try {
         const result = await jFetch({
           method: 'POST',
           baseUrl: options.baseURL,
           url: `/issues`,
+          prefixed: false,
+          data: payload,
+        });
+        return Result.success(result);
+      } catch (e) {
+        return Result.failure(e.message);
+      }
+    },
+    updateGrabbedIssue: async (id, payload) => {
+      try {
+        const result = await jFetch({
+          method: 'PATCH',
+          baseUrl: options.baseURL,
+          url: `/issues/${id}`,
           prefixed: false,
           data: payload,
         });

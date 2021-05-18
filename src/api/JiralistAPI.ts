@@ -1,13 +1,15 @@
 import { Result } from '../util/Result.util';
-import { CompletedIssue } from './models/CompletedIssue';
+import { GrabbedIssue, GrabbedIssueMessageDto } from './models/GrabbedIssue';
 
 /** An asynchronous API describing the product's REST API */
 export type JiralistAPI = {
-  /** Gets completed issues */
-  getCompletedIssues: (payload: {
+  /** Gets grabbed issues */
+  getGrabbedIssues: (payload: {
     assigneeEmail: string;
     projectKey: string;
-  }) => Promise<Result<CompletedIssue[], undefined>>;
-  /** Creats a new completed issue entry */
-  createCompletedIssue: (payload: CompletedIssue) => Promise<Result<CompletedIssue, undefined>>;
+  }) => Promise<Result<GrabbedIssue[], undefined>>;
+  /** Creats a new grabbed issue entry */
+  createGrabbedIssue: (payload: GrabbedIssue) => Promise<Result<GrabbedIssue, undefined>>;
+  /** Update an existing grabbed issue entry */
+  updateGrabbedIssue: (id: string, payload: GrabbedIssueMessageDto) => Promise<Result<GrabbedIssue, undefined>>;
 };

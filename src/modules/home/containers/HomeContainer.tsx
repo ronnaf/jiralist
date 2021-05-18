@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { toast } from 'react-toastify';
-import { CompletedIssue } from '../../../api/models/CompletedIssue';
+import { GrabbedIssue } from '../../../api/models/GrabbedIssue';
 import { JiraIssue } from '../../../api/models/JiraIssue';
 import { JiraProject } from '../../../api/models/JiraProject';
 import { JiraUser } from '../../../api/models/JiraUser';
@@ -11,7 +11,7 @@ import { projectSlice } from '../../../model/projectSlice';
 import { LOGOUT_ACTION, RootState } from '../../../model/store';
 import { userSlice } from '../../../model/userSlice';
 import { routes } from '../../../routes';
-import { CompletedIssueGroup, getCompletedIssuesGroupedByDate } from '../../../util/Issue.util';
+import { GrabbedIssueGroup, getGrabbedIssuesGroupedByDate } from '../../../util/Issue.util';
 import { HomeScreen } from '../components/HomeScreen';
 
 export type HomeProps = {
@@ -21,20 +21,24 @@ export type HomeProps = {
   currentUser: JiraUser | null;
   loadingIssues: boolean;
   loadingProjects: boolean;
-  completedIssues: CompletedIssue[];
-  loadingCompletedIssues: boolean;
+  grabbedIssues: GrabbedIssue[];
+  loadingGrabbedIssues: boolean;
   bannerShown: boolean;
-  completedIssueGroups: CompletedIssueGroup[];
+  grabbedIssueGroups: GrabbedIssueGroup[];
   incompleteIssues: JiraIssue[];
   pickerOpen: boolean;
   selectedIncIssue: JiraIssue | null;
+  selectedGrabbedIssue: GrabbedIssue | null;
   userClickedLogout: () => void;
   userChangedCurrentProject: React.Dispatch<React.SetStateAction<JiraProject | null>>;
   userToggledBanner: () => void;
   userClickedUpdateIncompleteIssue: (issue: JiraIssue) => void;
-  userPickedDate: (date: Date) => void;
+  userCreatedGrabbedIssue: (date: Date) => void;
+  userUpdatedGrabbedIssue: (date: Date) => void;
+  userClickedUpdateGrabbedIssue: (issue: GrabbedIssue) => void;
 };
 
+// TODO: do srp
 export const HomeContainer = () => {
   const projects = useSelector((state: RootState) => state.project.list);
   const user = useSelector((state: RootState) => state.user.profile);
@@ -42,26 +46,27 @@ export const HomeContainer = () => {
   const [issues, setIssues] = useState<JiraIssue[]>([]);
   const [loadingIssues, setLoadingIssues] = useState(false);
   const [loadingProjects, setLoadingProjects] = useState(false);
-  const [completedIssues, setCompletedIssues] = useState<CompletedIssue[]>([]);
-  const [loadingCompletedIssues, setLoadingCompletedIssues] = useState(false);
+  const [grabbedIssues, setGrabbedIssues] = useState<GrabbedIssue[]>([]);
+  const [loadingGrabbedIssues, setLoadingGrabbedIssues] = useState(false);
   const [bannerShown, setBannerShown] = useState(true);
-  const [completedIssueGroups, setCompletedIssueGroups] = useState<CompletedIssueGroup[]>([]);
+  const [grabbedIssueGroups, setGrabbedIssueGroups] = useState<GrabbedIssueGroup[]>([]);
   const [incompleteIssues, setIncompleteIssues] = useState<JiraIssue[]>([]);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [selectedIncIssue, setSelectedIncIssue] = useState<JiraIssue | null>(null);
+  const [selectedGrabbedIssue, setSelectedGrabbedIssue] = useState<GrabbedIssue | null>(null);
 
   const { jiraAPI, api, services } = Environment.current();
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const getCompletedIssues = useCallback(
+  const getGrabbedIssues = useCallback(
     async (projectKey: string, assigneeEmail: string) => {
-      setLoadingCompletedIssues(true);
-      const result = await api.getCompletedIssues({ projectKey, assigneeEmail });
-      setLoadingCompletedIssues(false);
+      setLoadingGrabbedIssues(true);
+      const result = await api.getGrabbedIssues({ projectKey, assigneeEmail });
+      setLoadingGrabbedIssues(false);
       if (result.success) {
-        setCompletedIssues(result.value);
-        setCompletedIssueGroups(getCompletedIssuesGroupedByDate(result.value));
+        setGrabbedIssues(result.value);
+        setGrabbedIssueGroups(getGrabbedIssuesGroupedByDate(result.value));
       } else {
         toast.error(result.error);
       }
@@ -113,20 +118,20 @@ export const HomeContainer = () => {
     })();
   }, [jiraAPI, currentProject?.key]);
 
-  // Listen to changes in current project, and fetches completed issues of that project
+  // Listen to changes in current project, and fetches grabbed issues of that project
   useEffect(() => {
     if (!currentProject?.key || !user?.emailAddress) return;
-    getCompletedIssues(currentProject.key, user.emailAddress);
-  }, [api, currentProject?.key, getCompletedIssues, user?.emailAddress]);
+    getGrabbedIssues(currentProject.key, user.emailAddress);
+  }, [api, currentProject?.key, getGrabbedIssues, user?.emailAddress]);
 
   // Fetches the incomplete issues of the current project
   useEffect(() => {
     if (!currentProject?.key) return;
     const incompleteIssues = issues.filter(issue => {
-      return completedIssues.findIndex(i => i.id === issue.id) === -1;
+      return grabbedIssues.findIndex(i => i.id === issue.id) === -1;
     });
     setIncompleteIssues(incompleteIssues);
-  }, [currentProject?.key, completedIssues, issues]);
+  }, [currentProject?.key, grabbedIssues, issues]);
 
   return (
     <HomeScreen
@@ -134,15 +139,16 @@ export const HomeContainer = () => {
       issues={issues}
       currentProject={currentProject}
       currentUser={user}
-      completedIssues={completedIssues}
+      grabbedIssues={grabbedIssues}
       loadingIssues={loadingIssues}
       loadingProjects={loadingProjects}
-      loadingCompletedIssues={loadingCompletedIssues}
+      loadingGrabbedIssues={loadingGrabbedIssues}
       bannerShown={bannerShown}
-      completedIssueGroups={completedIssueGroups}
+      grabbedIssueGroups={grabbedIssueGroups}
       incompleteIssues={incompleteIssues}
       pickerOpen={pickerOpen}
       selectedIncIssue={selectedIncIssue}
+      selectedGrabbedIssue={selectedGrabbedIssue}
       userChangedCurrentProject={setCurrentProject}
       userClickedLogout={() => {
         services.storage.clear();
@@ -154,7 +160,7 @@ export const HomeContainer = () => {
         setSelectedIncIssue(issue);
         setPickerOpen(true);
       }}
-      userPickedDate={date => {
+      userCreatedGrabbedIssue={date => {
         setPickerOpen(false);
         if (selectedIncIssue && currentProject) {
           const payload = {
@@ -164,15 +170,42 @@ export const HomeContainer = () => {
             summary: selectedIncIssue.fields.summary,
             assigneeEmail: selectedIncIssue.fields.assignee.emailAddress,
             dateCompleted: date.toJSON(),
+            isDone: false,
           };
           api
-            .createCompletedIssue(payload)
+            .createGrabbedIssue(payload)
             .then(result => {
-              toast.success('Successfully marked as completed!');
-              getCompletedIssues(payload.projectKey, payload.assigneeEmail);
+              toast.success('Issue marked as grabbed!');
+              getGrabbedIssues(payload.projectKey, payload.assigneeEmail);
+              setSelectedIncIssue(null);
             })
             .catch(e => {
               toast.error(e.message || 'Failed to update issue');
+              setSelectedIncIssue(null);
+            });
+        }
+      }}
+      userClickedUpdateGrabbedIssue={issue => {
+        setSelectedGrabbedIssue(issue);
+        setPickerOpen(true);
+      }}
+      userUpdatedGrabbedIssue={date => {
+        setPickerOpen(false);
+        if (selectedGrabbedIssue && currentProject) {
+          api
+            .updateGrabbedIssue(selectedGrabbedIssue.id, {
+              dateCompleted: date.toJSON(),
+            })
+            .then(result => {
+              toast.success('Issue updated!');
+              const projectKey = currentProject.key;
+              const assigneeEmail = selectedGrabbedIssue.assigneeEmail;
+              getGrabbedIssues(projectKey, assigneeEmail);
+              setSelectedGrabbedIssue(null);
+            })
+            .catch(e => {
+              toast.error(e.message || 'Failed to update issue');
+              setSelectedGrabbedIssue(null);
             });
         }
       }}

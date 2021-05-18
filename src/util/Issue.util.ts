@@ -1,27 +1,27 @@
 import dayjs from 'dayjs';
-import { CompletedIssue } from '../api/models/CompletedIssue';
+import { GrabbedIssue } from '../api/models/GrabbedIssue';
 
-export type CompletedIssueGroup = {
+export type GrabbedIssueGroup = {
   dateCompletedString: string;
-  issues: CompletedIssue[];
+  issues: GrabbedIssue[];
 };
 
 export const getIssueLink = (issueKey: string) => `https://smashingboxes.atlassian.net/browse/${issueKey}`;
 
-export const getCompletedIssuesGroupedByDate = (issues: CompletedIssue[]): CompletedIssueGroup[] => {
-  // { [date]: [{...completedIssue}] }
-  const completedIssuesMap: { [key: string]: CompletedIssue[] } = {};
+export const getGrabbedIssuesGroupedByDate = (issues: GrabbedIssue[]): GrabbedIssueGroup[] => {
+  // { [date]: [{...grabbedIssue}] }
+  const issuesMap: { [key: string]: GrabbedIssue[] } = {};
 
-  issues.forEach(completedIssue => {
-    const dateCompleted = dayjs(completedIssue.dateCompleted).format('MMMM DD, YYYY');
-    if (!completedIssuesMap[dateCompleted]) {
-      completedIssuesMap[dateCompleted] = [];
+  issues.forEach(issue => {
+    const dateCompleted = dayjs(issue.dateCompleted).format('MMMM DD, YYYY');
+    if (!issuesMap[dateCompleted]) {
+      issuesMap[dateCompleted] = [];
     }
-    completedIssuesMap[dateCompleted].push(completedIssue);
+    issuesMap[dateCompleted].push(issue);
   });
 
   // [{ dateCompletedString, issues }]
-  const groupedIssues = Object.entries(completedIssuesMap)
+  const groupedIssues = Object.entries(issuesMap)
     .map(([date, issues]) => ({
       dateCompletedString: date,
       dateCompleted: issues[0].dateCompleted,

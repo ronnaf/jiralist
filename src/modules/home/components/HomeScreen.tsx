@@ -88,28 +88,31 @@ export const HomeScreen = (props: HomeProps) => {
                 ))}
               </Issues>
             </div>
-            {/* Completed issues */}
+            {/* Grabbed issues */}
             <div>
               <SectionLabel>
                 <div>
-                  <H1>Completed Issues</H1>
-                  <Subtitle>Issues that you've completed, but not necessarily READY FOR QA</Subtitle>
+                  <H1>Grabbed Issues</H1>
+                  <Subtitle>Issues that you're currently working on</Subtitle>
                 </div>
-                {props.loadingCompletedIssues && <JSpinner />}
+                {props.loadingGrabbedIssues && <JSpinner />}
               </SectionLabel>
               <SizedBox height={10} />
               <IssueGroups>
-                {props.completedIssueGroups.map(issueGroup => (
+                {props.grabbedIssueGroups.map(issueGroup => (
                   <div key={issueGroup.dateCompletedString}>
                     <Regular weight="bold">{issueGroup.dateCompletedString}</Regular>
                     <SizedBox height={4} />
                     <Issues>
                       {issueGroup.issues.map(issue => (
                         <JIssueItem
+                          checkbox
                           key={issue.id}
                           issueKey={issue.key}
                           summary={issue.summary}
+                          checked={issue.isDone}
                           onCopy={() => copyToClipboard(getIssueLink(issue.key))}
+                          onUpdate={() => props.userClickedUpdateGrabbedIssue(issue)}
                         />
                       ))}
                     </Issues>
@@ -129,8 +132,20 @@ export const HomeScreen = (props: HomeProps) => {
           <PickerContainer>
             <DayPicker
               todayButton="Today"
-              onDayClick={props.userPickedDate}
-              onTodayButtonClick={props.userPickedDate}
+              onDayClick={date => {
+                if (props.selectedIncIssue) {
+                  props.userCreatedGrabbedIssue(date);
+                } else if (props.selectedGrabbedIssue) {
+                  props.userUpdatedGrabbedIssue(date);
+                }
+              }}
+              onTodayButtonClick={date => {
+                if (props.selectedIncIssue) {
+                  props.userCreatedGrabbedIssue(date);
+                } else if (props.selectedGrabbedIssue) {
+                  props.userUpdatedGrabbedIssue(date);
+                }
+              }}
             />
           </PickerContainer>
         </JRawDiv>

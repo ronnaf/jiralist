@@ -6,6 +6,9 @@ import { ButtonText, colors, Regular } from '../../../core/Styles';
 type Props = {
   issueKey: string;
   summary: string;
+  checkbox?: boolean;
+  checked?: boolean;
+  onCheck?: () => void;
   onUpdate?: () => void;
   onCopy: () => void;
 };
@@ -13,10 +16,13 @@ type Props = {
 export const JIssueItem = (props: Props) => {
   return (
     <Issue>
-      <Regular>
-        [<b>{props.issueKey}</b>] <IssueDivide>|</IssueDivide> {props.summary}
-      </Regular>
-      <IssueTrailing>
+      <Child>
+        {props.checkbox && <input type="checkbox" checked={props.checked} onChange={props.onCheck} />}
+        <Regular>
+          [<b>{props.issueKey}</b>] <IssueDivide>|</IssueDivide> {props.summary}
+        </Regular>
+      </Child>
+      <Child>
         {!!props.onUpdate && (
           <JRawButton onClick={props.onUpdate}>
             <ButtonText color={colors.shadow}>update</ButtonText>
@@ -25,7 +31,7 @@ export const JIssueItem = (props: Props) => {
         <JRawButton onClick={props.onCopy}>
           <ButtonText color={colors.shadow}>copy</ButtonText>
         </JRawButton>
-      </IssueTrailing>
+      </Child>
     </Issue>
   );
 };
@@ -38,7 +44,7 @@ const Issue = styled.div`
   padding: 10px;
 `;
 
-const IssueTrailing = styled.div`
+const Child = styled.div`
   display: flex;
   align-items: center;
   & > :not(:last-child) {
