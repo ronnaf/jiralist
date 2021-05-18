@@ -1,5 +1,5 @@
 import { jFetch } from '../util/JFetch.util';
-import { Result } from '../util/Result.util';
+import { ResultType } from '../util/Result.util';
 import { JiralistAPI } from './JiralistAPI';
 
 /**

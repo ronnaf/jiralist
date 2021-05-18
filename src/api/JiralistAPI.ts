@@ -1,4 +1,4 @@
-import { Result } from '../util/Result.util';
+import { ResultType } from '../util/Result.util';
 import { GrabbedIssue, GrabbedIssueMessageDto } from './models/GrabbedIssue';
 
 /** An asynchronous API describing the product's REST API */
@@ -7,11 +7,11 @@ export type JiralistAPI = {
   getGrabbedIssues: (payload: {
     assigneeEmail: string;
     projectKey: string;
-  }) => Promise<Result<GrabbedIssue[], undefined>>;
+  }) => Promise<ResultType<GrabbedIssue[], undefined>>;
   /** Creats a new grabbed issue entry */
-  createGrabbedIssue: (payload: GrabbedIssue) => Promise<Result<GrabbedIssue, undefined>>;
+  createGrabbedIssue: (payload: GrabbedIssue) => Promise<ResultType<GrabbedIssue, undefined>>;
   /** Update an existing grabbed issue entry */
-  updateGrabbedIssue: (id: string, payload: GrabbedIssueMessageDto) => Promise<Result<GrabbedIssue, undefined>>;
+  updateGrabbedIssue: (id: string, payload: GrabbedIssueMessageDto) => Promise<ResultType<GrabbedIssue, undefined>>;
   /** Delete an existing grabbed issue entry */
-  deleteGrabbedIssue: (id: string) => Promise<Result<GrabbedIssue, undefined>>;
+  deleteGrabbedIssue: (id: string) => Promise<ResultType<GrabbedIssue, undefined>>;
 };

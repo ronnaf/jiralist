@@ -1,27 +1,27 @@
 /**
  * A type used for representing a failable result.
  */
-export type Result<T, E> =
+export type ResultType<T, E> =
   | {
       success: true;
       failure: false;
       value: T;
       error?: undefined;
-      map: <U>(transform: (value: T) => U) => Result<U, E>;
-      mapError: <F>(transform: (error: E) => F) => Result<T, F>;
+      map: <U>(transform: (value: T) => U) => ResultType<U, E>;
+      mapError: <F>(transform: (error: E) => F) => ResultType<T, F>;
     }
   | {
       success: false;
       failure: true;
       value?: undefined;
       error: E;
-      map: <U>(transform: (value: T) => U) => Result<U, E>;
-      mapError: <F>(transform: (error: E) => F) => Result<T, F>;
+      map: <U>(transform: (value: T) => U) => ResultType<U, E>;
+      mapError: <F>(transform: (error: E) => F) => ResultType<T, F>;
     };
 
 export const Result = {
   /** Creates a Result success object. */
-  success: <T, E>(value: T): Result<T, E> => {
+  success: <T, E>(value: T): ResultType<T, E> => {
     return {
       success: true,
       failure: false,
@@ -31,7 +31,7 @@ export const Result = {
     };
   },
   /** Creates a Result failure object. */
-  failure: <T, E>(error: E): Result<T, E> => {
+  failure: <T, E>(error: E): ResultType<T, E> => {
     return {
       success: false,
       failure: true,
