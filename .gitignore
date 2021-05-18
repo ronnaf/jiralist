@@ -24,3 +24,5 @@ yarn-error.log*
 
 # editor configs
 .idea
+
+.env
