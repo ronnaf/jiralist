@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEventHandler } from 'react';
 import styled from 'styled-components';
 import { JRawButton } from '../../../core/JRawButton';
 import { ButtonText, colors, Regular } from '../../../core/Styles';
@@ -8,9 +8,10 @@ type Props = {
   summary: string;
   checkbox?: boolean;
   checked?: boolean;
-  onCheck?: () => void;
+  onCheck?: ChangeEventHandler<HTMLInputElement>;
   onUpdate?: () => void;
   onCopy: () => void;
+  onDelete?: () => void;
 };
 
 export const JIssueItem = (props: Props) => {
@@ -23,6 +24,11 @@ export const JIssueItem = (props: Props) => {
         </Regular>
       </Child>
       <Child>
+        {!!props.onDelete && (
+          <JRawButton onClick={props.onDelete}>
+            <ButtonText color={colors.shadow}>delete</ButtonText>
+          </JRawButton>
+        )}
         {!!props.onUpdate && (
           <JRawButton onClick={props.onUpdate}>
             <ButtonText color={colors.shadow}>update</ButtonText>

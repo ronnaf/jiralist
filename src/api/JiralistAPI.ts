@@ -12,4 +12,6 @@ export type JiralistAPI = {
   createGrabbedIssue: (payload: GrabbedIssue) => Promise<Result<GrabbedIssue, undefined>>;
   /** Update an existing grabbed issue entry */
   updateGrabbedIssue: (id: string, payload: GrabbedIssueMessageDto) => Promise<Result<GrabbedIssue, undefined>>;
+  /** Delete an existing grabbed issue entry */
+  deleteGrabbedIssue: (id: string) => Promise<Result<GrabbedIssue, undefined>>;
 };

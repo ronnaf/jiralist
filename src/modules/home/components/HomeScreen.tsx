@@ -113,6 +113,8 @@ export const HomeScreen = (props: HomeProps) => {
                           checked={issue.isDone}
                           onCopy={() => copyToClipboard(getIssueLink(issue.key))}
                           onUpdate={() => props.userClickedUpdateGrabbedIssue(issue)}
+                          onCheck={e => props.userToggledCheckGrabbedIssue(issue, e.target.checked)}
+                          onDelete={() => props.userDeletedGrabbedIssue(issue)}
                         />
                       ))}
                     </Issues>

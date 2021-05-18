@@ -5,7 +5,7 @@ import { jStorageKeys } from '../services/LocalStorageService';
 type Args = {
   baseUrl: string;
   url: string;
-  method?: 'POST' | 'GET' | 'PATCH';
+  method?: 'POST' | 'GET' | 'PATCH' | 'DELETE';
   /** Data for when doing a POST request */
   data?: Object;
   /** Whether or not to prepend a cors-everywhere proxy */

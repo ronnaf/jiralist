@@ -36,6 +36,8 @@ export type HomeProps = {
   userCreatedGrabbedIssue: (date: Date) => void;
   userUpdatedGrabbedIssue: (date: Date) => void;
   userClickedUpdateGrabbedIssue: (issue: GrabbedIssue) => void;
+  userToggledCheckGrabbedIssue: (issue: GrabbedIssue, checked: boolean) => void;
+  userDeletedGrabbedIssue: (issue: GrabbedIssue) => void;
 };
 
 // TODO: do srp
@@ -206,6 +208,38 @@ export const HomeContainer = () => {
             .catch(e => {
               toast.error(e.message || 'Failed to update issue');
               setSelectedGrabbedIssue(null);
+            });
+        }
+      }}
+      userToggledCheckGrabbedIssue={(issue, checked) => {
+        if (currentProject) {
+          api
+            .updateGrabbedIssue(issue.id, {
+              isDone: checked,
+            })
+            .then(result => {
+              toast.success('Issue updated!');
+              const projectKey = currentProject.key;
+              const assigneeEmail = issue.assigneeEmail;
+              getGrabbedIssues(projectKey, assigneeEmail);
+            })
+            .catch(e => {
+              toast.error(e.message || 'Failed to update issue');
+            });
+        }
+      }}
+      userDeletedGrabbedIssue={issue => {
+        if (currentProject) {
+          api
+            .deleteGrabbedIssue(issue.id)
+            .then(result => {
+              toast.success('Issue deleted!');
+              const projectKey = currentProject.key;
+              const assigneeEmail = issue.assigneeEmail;
+              getGrabbedIssues(projectKey, assigneeEmail);
+            })
+            .catch(e => {
+              toast.error(e.message || 'Failed to delete issue');
             });
         }
       }}

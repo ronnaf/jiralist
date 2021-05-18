@@ -61,5 +61,18 @@ export const jiralistAPIClient = (options: {
         return Result.failure(e.message);
       }
     },
+    deleteGrabbedIssue: async id => {
+      try {
+        const result = await jFetch({
+          method: 'DELETE',
+          baseUrl: options.baseURL,
+          url: `/issues/${id}`,
+          prefixed: false,
+        });
+        return Result.success(result);
+      } catch (e) {
+        return Result.failure(e.message);
+      }
+    },
   };
 };
