@@ -129,7 +129,7 @@ export const HomeScreen = (props: HomeProps) => {
       {/* Datepicker modal */}
       <JModal isOpen={props.pickerOpen}>
         <JRawDiv>
-          <H1 color={colors.background1}>When did you complete {props.selectedIncIssue?.key}?</H1>
+          <H1 color={colors.background1}>When are you planning to complete {props.selectedIncIssue?.key}?</H1>
           <SizedBox height={10} />
           <PickerContainer>
             <DayPicker
