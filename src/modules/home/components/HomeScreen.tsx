@@ -6,12 +6,13 @@ import { getIssueLink } from '../../../util/Issue.util';
 import { JBanner } from '../../core/JBanner';
 import { JModal } from '../../core/JModal';
 import { JRawDiv } from '../../core/JRawDiv';
-import { JSpinner } from '../../core/JSpinner';
 import { SizedBox } from '../../core/SizedBox';
-import { colors, H1, Regular, Subtitle } from '../../core/Styles';
+import { colors, H1, Regular } from '../../core/Styles';
 import { HomeProps } from '../containers/HomeContainer';
 import { JHeader } from './shared/JHeader';
+import { JIssueGroup } from './shared/JIssueGroup';
 import { JIssueItem } from './shared/JIssueItem';
+import { JSection } from './shared/JSection';
 import { JSidebar } from './shared/JSidebar';
 
 export const HomeScreen = (props: HomeProps) => {
@@ -30,16 +31,10 @@ export const HomeScreen = (props: HomeProps) => {
           />
           {/* Body */}
           <Body>
-            {/* Current project name */}
-            {props.currentProject && (
-              <Flex>
-                <H1>{props.currentProject?.name}</H1>
-                <Regular>({props.currentProject?.key})</Regular>
-              </Flex>
-            )}
             {/* Info banner */}
             {props.bannerShown && (
               <JBanner
+                onClose={props.userToggledBanner}
                 title="Getting a 'See /corsdemo for more info' error?"
                 message={
                   <span>
@@ -47,19 +42,20 @@ export const HomeScreen = (props: HomeProps) => {
                     <b>Request temporary access to the demo server</b>`
                   </span>
                 }
-                onClose={props.userToggledBanner}
               />
             )}
+            {/* Current project name */}
+            {props.currentProject && (
+              <Flex>
+                <H1>{props.currentProject?.name}</H1>
+                <Regular>({props.currentProject?.key})</Regular>
+              </Flex>
+            )}
             {/* Issues */}
-            <div>
-              <SectionLabel>
-                <div>
-                  <H1>Issues</H1>
-                  <Subtitle>Your issues that are currently in TODO or IN PROGRESS in the Jira Board</Subtitle>
-                </div>
-                {props.loadingIssues && <JSpinner />}
-              </SectionLabel>
-              <SizedBox height={10} />
+            <JSection
+              title="Issues"
+              subtitle="Your issues that are currently in TODO or IN PROGRESS in the Jira Board"
+              loading={props.loadingIssues}>
               <Issues>
                 {props.issues.map(issue => (
                   <JIssueItem
@@ -70,12 +66,12 @@ export const HomeScreen = (props: HomeProps) => {
                   />
                 ))}
               </Issues>
-            </div>
+            </JSection>
             {/* Incomplete issues */}
-            <div>
-              <H1>Incomplete Issues</H1>
-              <Subtitle>Issues that are assigned to you that you can work on</Subtitle>
-              <SizedBox height={10} />
+            <JSection
+              title="Incomplete Issues"
+              subtitle="Issues that are assigned to you that you can work on"
+              loading={props.loadingIssues}>
               <Issues>
                 {props.incompleteIssues.map(issue => (
                   <JIssueItem
@@ -87,22 +83,15 @@ export const HomeScreen = (props: HomeProps) => {
                   />
                 ))}
               </Issues>
-            </div>
+            </JSection>
             {/* Grabbed issues */}
-            <div>
-              <SectionLabel>
-                <div>
-                  <H1>Grabbed Issues</H1>
-                  <Subtitle>Issues that you're currently working on</Subtitle>
-                </div>
-                {props.loadingGrabbedIssues && <JSpinner />}
-              </SectionLabel>
-              <SizedBox height={10} />
+            <JSection
+              title="Grabbed Issues"
+              subtitle="Issues that you're currently working on"
+              loading={props.loadingGrabbedIssues}>
               <IssueGroups>
                 {props.grabbedIssueGroups.map(issueGroup => (
-                  <div key={issueGroup.dateCompletedString}>
-                    <Regular weight="bold">{issueGroup.dateCompletedString}</Regular>
-                    <SizedBox height={4} />
+                  <JIssueGroup key={issueGroup.dateCompletedString} title={issueGroup.dateCompletedString}>
                     <Issues>
                       {issueGroup.issues.map(issue => (
                         <JIssueItem
@@ -118,10 +107,10 @@ export const HomeScreen = (props: HomeProps) => {
                         />
                       ))}
                     </Issues>
-                  </div>
+                  </JIssueGroup>
                 ))}
               </IssueGroups>
-            </div>
+            </JSection>
           </Body>
         </Main>
       </InnerContainer>
@@ -198,12 +187,6 @@ const IssueGroups = styled.div`
   & > :not(:last-child) {
     margin-bottom: 16px;
   }
-`;
-
-const SectionLabel = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 `;
 
 const PickerContainer = styled.div`
