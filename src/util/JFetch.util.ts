@@ -8,27 +8,41 @@ type Args = {
   method?: 'POST' | 'GET' | 'PATCH' | 'DELETE';
   /** Data for when doing a POST request */
   data?: Object;
-  /** Whether or not to prepend a cors-everywhere proxy */
-  prefixed?: boolean;
+  noAuth?: boolean;
+};
+
+/**
+ * Requests that use OAuth 2.0 (3LO) are made via api.atlassian.com (not https://your-domain.atlassian.net).
+ * Construct your request URL using the following structure:
+ * - Jira apps: https://api.atlassian.com/ex/jira/{cloudid}/{api}
+ *
+ * @param {string} baseUrl
+ * @returns
+ */
+export const getJiraBaseUrl = (baseUrl: string) => {
+  const { services } = Environment.current();
+  const { storage } = services;
+  const cloudId = storage.getToken(jStorageKeys.J_CLOUD_ID);
+  return `${baseUrl}/ex/jira/${cloudId}`;
 };
 
 export const jFetch = async (args: Args) => {
-  const { prefixed = true } = args;
   const { services } = Environment.current();
   const { logger, storage } = services;
 
-  const proxy = prefixed ? process.env.REACT_APP_CORS_PROXY : '';
-  const apiKey = storage.getToken(jStorageKeys.J_API_TOKEN);
+  const accessToken = storage.getToken(jStorageKeys.J_API_TOKEN);
   const init: AxiosRequestConfig = {
-    url: `${proxy}${args.baseUrl}${args.url}`,
+    url: `${args.baseUrl}${args.url}`,
     method: args.method || 'GET',
     data: args.data,
     headers: {
-      'X-Atlassian-Token': 'no-check',
       Accept: 'application/json',
-      Authorization: `Basic ${apiKey}`,
     },
   };
+
+  if (!args.noAuth) {
+    init.headers.Authorization = `Bearer ${accessToken}`;
+  }
 
   const prefix = '[/' + args.url.split('/')[1].split('?')[0];
   logger.log('\n');
@@ -52,8 +66,13 @@ export const jFetch = async (args: Args) => {
 
       logger.log(`#${prefix}\terror.response]:`, error.response);
       const errorData = error.response.data;
-      const errorMessage = typeof errorData === 'string' ? errorData : error.response.data.title;
-      throw new Error(errorMessage);
+      if (typeof errorData === 'string') {
+        throw new Error(errorData);
+      } else if (errorData.errorMessages.length) {
+        throw new Error(errorData.errorMessages[0]);
+      } else {
+        throw new Error(errorData.message);
+      }
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of

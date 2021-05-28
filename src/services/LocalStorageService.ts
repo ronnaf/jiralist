@@ -11,6 +11,7 @@ export type LocalStorageService = {
 
 export const jStorageKeys = {
   J_API_TOKEN: 'J_API_TOKEN',
+  J_CLOUD_ID: 'J_CLOUD_ID',
 };
 
 export const localStorageService: LocalStorageService = {

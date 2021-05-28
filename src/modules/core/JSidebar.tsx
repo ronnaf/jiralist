@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { JiraProject } from '../../../../api/models/JiraProject';
-import { JButton } from '../../../core/JButton';
-import { JRawButton } from '../../../core/JRawButton';
-import { JSpinner } from '../../../core/JSpinner';
-import { SizedBox } from '../../../core/SizedBox';
-import { colors, H1, Regular } from '../../../core/Styles';
+import { JiraProject } from '../../api/models/JiraProject';
+import { JButton } from './JButton';
+import { JRawButton } from './JRawButton';
+import { JSpinner } from './JSpinner';
+import { SizedBox } from './SizedBox';
+import { colors, H1, Regular } from './Styles';
 
 type Props = {
   projects: JiraProject[];

@@ -15,7 +15,6 @@ interface Props extends RouteProps {}
 export const PrivateRoute: React.FC<Props> = ({ children, component: Component, ...rest }) => {
   const { services } = Environment.current();
   const isAuthenticated = !!services.storage.getToken(jStorageKeys.J_API_TOKEN);
-
   return (
     <Route
       render={props =>

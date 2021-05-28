@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { toast } from 'react-toastify';
 import { GrabbedIssue } from '../../../api/models/GrabbedIssue';
 import { JiraIssue } from '../../../api/models/JiraIssue';

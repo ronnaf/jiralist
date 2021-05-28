@@ -26,7 +26,6 @@ export const jiralistAPIClient = (options: {
         const result = await jFetch({
           baseUrl: options.baseURL,
           url: `/issues?filter=${filter}`,
-          prefixed: false,
         });
         return Result.success(result);
       } catch (e) {
@@ -39,7 +38,6 @@ export const jiralistAPIClient = (options: {
           method: 'POST',
           baseUrl: options.baseURL,
           url: `/issues`,
-          prefixed: false,
           data: payload,
         });
         return Result.success(result);
@@ -53,7 +51,6 @@ export const jiralistAPIClient = (options: {
           method: 'PATCH',
           baseUrl: options.baseURL,
           url: `/issues/${id}`,
-          prefixed: false,
           data: payload,
         });
         return Result.success(result);
@@ -67,7 +64,6 @@ export const jiralistAPIClient = (options: {
           method: 'DELETE',
           baseUrl: options.baseURL,
           url: `/issues/${id}`,
-          prefixed: false,
         });
         return Result.success(result);
       } catch (e) {

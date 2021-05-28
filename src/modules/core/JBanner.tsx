@@ -7,10 +7,12 @@ import { JRawButton } from './JRawButton';
 type Props = {
   title: React.ReactNode;
   message: React.ReactNode;
+  shown: boolean;
   onClose?: () => void;
 };
 
 export const JBanner = (props: Props) => {
+  if (!props.shown) return null;
   return (
     <Container>
       <IconContainer>

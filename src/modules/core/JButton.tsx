@@ -7,18 +7,19 @@ import { colors, ButtonText, JTextProps } from './Styles';
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   title: string;
+  hideIcon?: boolean;
   buttonTextProps?: JTextProps;
 }
 
 export const JButton = (props: Props) => {
-  const { title, buttonTextProps, ...buttonProps } = props;
+  const { title, hideIcon = false, buttonTextProps, ...buttonProps } = props;
   return (
     <Button {...buttonProps}>
       <ButtonText weight="bold" {...buttonTextProps}>
         {props.title}
       </ButtonText>
       <SizedBox width={4} />
-      <BsArrowRight color={colors.background2} />
+      {!hideIcon && <BsArrowRight color={colors.background2} />}
     </Button>
   );
 };

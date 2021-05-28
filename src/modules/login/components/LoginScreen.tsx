@@ -1,63 +1,49 @@
 import React from 'react';
 import styled from 'styled-components';
 import { JButton } from '../../core/JButton';
-import { JInput } from '../../core/JInput';
+import { JLogo } from '../../core/JLogo';
+import { JSpinner } from '../../core/JSpinner';
 import { SizedBox } from '../../core/SizedBox';
-import { colors, H1, Regular } from '../../core/Styles';
+import { colors } from '../../core/Styles';
 import { LoginProps } from '../containers/LoginContainer';
 
 export const LoginScreen: React.FC<LoginProps> = props => {
   return (
-    <Container>
-      <CenteredContainer>
-        <H1>welcome to jiralist</H1>
-        <SizedBox height={34} />
-        <Regular>jira email</Regular>
-        <SizedBox height={8} />
-        <JInput
-          value={props.formState.email}
-          onChange={e =>
-            props.userUpdatedForm(f => ({
-              ...f,
-              email: e.target.value,
-            }))
-          }
-        />
-        <SizedBox height={26} />
-        <Regular>jira api key</Regular>
-        <SizedBox height={8} />
-        <JInput
-          value={props.formState.apiKey}
-          onChange={e =>
-            props.userUpdatedForm(f => ({
-              ...f,
-              apiKey: e.target.value,
-            }))
-          }
-        />
-        <SizedBox height={26} />
+    <Div>
+      <CenteredDiv>
+        {props.loading ? (
+          <JSpinner />
+        ) : (
+          <LogoDiv>
+            <JLogo />
+          </LogoDiv>
+        )}
+        <SizedBox height={56} />
         <JButton
-          title="go"
-          buttonTextProps={{
-            transform: 'uppercase',
-          }}
+          disabled={props.loading}
+          title="login with atlassian"
+          buttonTextProps={{ transform: 'uppercase' }}
           onClick={props.userClickedGo}
         />
-      </CenteredContainer>
-    </Container>
+      </CenteredDiv>
+    </Div>
   );
 };
 
-const Container = styled.div`
+const Div = styled.div`
   width: 100%;
   height: 100vh;
   position: relative;
   background-color: ${colors.background1};
 `;
 
-const CenteredContainer = styled.div`
+const CenteredDiv = styled.div`
   position: absolute;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
+`;
+
+const LogoDiv = styled.div`
+  display: flex;
 `;

@@ -36,7 +36,8 @@ const startup = () => {
       baseURL: process.env.REACT_APP_JIRALIST_API_BASE_URL || '',
     }),
     jiraAPI: jiraAPIClient({
-      baseURL: process.env.REACT_APP_JIRA_API_BASE_URL || '',
+      baseURL: process.env.REACT_APP_ATLASSIAN_API_BASE_URL || '',
+      authBaseUrl: process.env.REACT_APP_ATLASSIAN_AUTH_BASE_URL || '',
     }),
     services: {
       auth: auth0Service({ clientID: '', domain: '' }),

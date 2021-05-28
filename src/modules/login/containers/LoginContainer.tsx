@@ -1,54 +1,69 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { Environment } from '../../../Environment';
 import { routes } from '../../../routes';
 import { jStorageKeys } from '../../../services/LocalStorageService';
 import { LoginScreen } from '../components/LoginScreen';
+import qs from 'query-string';
 import { toast } from 'react-toastify';
 
 export type LoginProps = {
-  formState: FormState;
+  loading: boolean;
   userClickedGo: () => void;
-  userUpdatedForm: React.Dispatch<React.SetStateAction<FormState>>;
-};
-
-type FormState = {
-  email: string;
-  apiKey: string;
-};
-
-const initFormState: FormState = {
-  email: '',
-  apiKey: '',
 };
 
 export const LoginContainer = () => {
-  const [formState, setFormState] = useState(initFormState);
+  const [loading, setLoading] = useState(false);
 
-  const { services } = Environment.current();
+  const { services, jiraAPI } = Environment.current();
   const history = useHistory();
+  const location = useLocation();
+  const query = qs.parse(location.search);
 
-  // redirect to /home if already authenticated
+  // Redirect to /home if already authenticated
+  // else exchange authorization code for access token
   useEffect(() => {
     const isAuthenticated = !!services.storage.getToken(jStorageKeys.J_API_TOKEN);
     if (isAuthenticated) {
       history.replace(routes.PROJECTS);
+      return;
     }
-  }, [history, services.storage]);
+
+    if (!query.code) return;
+    (async () => {
+      setLoading(true);
+      const tokenRes = await jiraAPI.getAccessToken(query.code as string);
+      setLoading(false);
+
+      if (tokenRes.success) {
+        const { access_token } = tokenRes.value;
+
+        setLoading(true);
+        const cloudRes = await jiraAPI.getCloudId(access_token);
+        setLoading(false);
+
+        if (cloudRes.success) {
+          const { id: cloudId } = cloudRes.value[0];
+          console.log('cloudRes -', cloudRes.value);
+          services.storage.storeToken(jStorageKeys.J_API_TOKEN, access_token);
+          services.storage.storeToken(jStorageKeys.J_CLOUD_ID, cloudId);
+          history.replace(routes.PROJECTS);
+        } else {
+          toast.error(cloudRes.error);
+        }
+      } else {
+        toast.error(tokenRes.error);
+      }
+    })();
+  }, [history, jiraAPI, query.code, services.storage]);
 
   return (
     <LoginScreen
-      formState={formState}
-      userUpdatedForm={setFormState}
+      loading={loading}
       userClickedGo={() => {
-        if (!formState.email || !formState.apiKey) {
-          toast.error('you must supply email and api key fields');
-          return;
+        if (process.env.REACT_APP_3LO_URL) {
+          window.location.replace(process.env.REACT_APP_3LO_URL);
         }
-
-        const base64ApiKey = btoa(`${formState.email}:${formState.apiKey}`);
-        services.storage.storeToken(jStorageKeys.J_API_TOKEN, base64ApiKey);
-        history.push(routes.PROJECTS);
       }}
     />
   );
