@@ -1,7 +1,7 @@
 # jiralist
 
-![jiralist_login](https://user-images.githubusercontent.com/32459751/118410855-2b3a0500-b6c4-11eb-8973-aff1d2b47259.png)
-![screenshot-localhost](https://user-images.githubusercontent.com/32459751/118692384-8f7fd480-b83c-11eb-94c3-215fabd0c1ea.png)
+![login](https://user-images.githubusercontent.com/32459751/120070095-ef3b7280-c0bb-11eb-8ce3-3dc43de87d42.png)
+![home](https://user-images.githubusercontent.com/32459751/120070099-f1053600-c0bb-11eb-8091-1a6dc0a9283f.png)
 
 > react/typescript template based on the [arno](https://github.com/smashingboxes/arno) react native template.
 
