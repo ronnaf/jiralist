@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router';
 import styled from 'styled-components';
 import { routes } from '../../../routes';
+import { JBanner } from '../../core/JBanner';
 import { JHeader } from '../../core/JHeader';
 import { JSidebar } from '../../core/JSidebar';
 import { colors } from '../../core/Styles';
@@ -17,6 +18,11 @@ export const HomeScreen = (props: HomeProps) => {
         <Main>
           <JSidebar projects={props.projects} loading={props.loadingProjects} />
           <Body>
+            <JBanner
+              shown={true}
+              title="Getting an Unauthorized error?"
+              message="Log out and then log in again. This app is currently not refreshing expired access tokens."
+            />
             <Switch>
               <Route exact path={routes.PROJECTS} component={Landing} />
               <Route exact path={routes.PROJECTS__VIEW()} component={ProjectContainer} />
