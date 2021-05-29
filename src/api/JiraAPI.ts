@@ -6,6 +6,8 @@ import { JiraSite } from './models/JiraSite';
 import { JiraUser } from './models/JiraUser';
 
 export type JiraAPI = {
+  /** Constructs authorization url for login  */
+  constructAuthUrl: () => string;
   /** Gets access token in exchange of authorization code */
   getAccessToken: (code: string) => Promise<ResultType<AtlassianAuthResult, undefined>>;
   /** Gets the cloudid for the Jira site based on accessToken */

@@ -61,9 +61,8 @@ export const LoginContainer = () => {
     <LoginScreen
       loading={loading}
       userClickedGo={() => {
-        if (process.env.REACT_APP_3LO_URL) {
-          window.location.replace(process.env.REACT_APP_3LO_URL);
-        }
+        const authUrl = jiraAPI.constructAuthUrl();
+        window.location.replace(authUrl);
       }}
     />
   );

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import qs from 'query-string';
 import { getJiraBaseUrl, jFetch } from '../util/JFetch.util';
 import { Result } from '../util/Result.util';
 import { JiraAPI } from './JiraAPI';
@@ -10,6 +11,22 @@ export const jiraAPIClient = (options: {
   authBaseUrl: string;
 }): JiraAPI => {
   return {
+    constructAuthUrl: () => {
+      const url = qs.stringifyUrl({
+        url: `${options.authBaseUrl}/authorize`,
+        query: {
+          audience: options.baseURL.split('//')[1],
+          client_id: process.env.REACT_APP_3LO_CLIENT_ID,
+          scope: 'read:jira-user read:jira-work',
+          redirect_uri: process.env.REACT_APP_3LO_CALLBACK_URL,
+          // eslint-disable-next-line no-template-curly-in-string
+          state: '${YOUR_USER_BOUND_VALUE}',
+          response_type: 'code',
+          prompt: 'consent',
+        },
+      });
+      return url;
+    },
     getAccessToken: async code => {
       try {
         const response = await axios({
