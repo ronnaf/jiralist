@@ -10,7 +10,7 @@ import { JButton } from './JButton';
 import { JRawButton } from './JRawButton';
 import { JSpinner } from './JSpinner';
 import { SizedBox } from './SizedBox';
-import { colors, H1, Regular, Subtitle } from './Styles';
+import { H1, Regular, Subtitle } from './Styles';
 
 type Props = {
   projects: JiraProject[];
@@ -72,7 +72,7 @@ const Sidebar = styled.div`
 
 const VerticalLine = styled.div`
   width: 1px;
-  background-color: ${colors.shadow};
+  background-color: #ffffff17;
 `;
 
 const Projects = styled.div`
