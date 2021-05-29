@@ -19,6 +19,7 @@ export type ProjectProps = {
   incompleteIssues: JiraIssue[];
   loadingGrabbedIssues: boolean;
   grabbedIssueGroups: GrabbedIssueGroup[];
+  disabledIssueKey: string | null;
   userClickedUpdateIncompleteIssue: (issue: JiraIssue) => void;
   userClickedUpdateGrabbedIssue: (issue: GrabbedIssue) => void;
   userClickedCheckGrabbedIssue: (issue: GrabbedIssue, checked: boolean) => void;
@@ -34,6 +35,7 @@ export const ProjectContainer = () => {
   const [grabbedIssues, setGrabbedIssues] = useState<GrabbedIssue[]>([]);
   const [grabbedIssueGroups, setGrabbedIssueGroups] = useState<GrabbedIssueGroup[]>([]);
   const [incompleteIssues, setIncompleteIssues] = useState<JiraIssue[]>([]);
+  const [disabledIssueKey, setDisabledIssueKey] = useState<string | null>(null);
 
   const { jiraAPI, api } = Environment.current();
   const { id: projectKey } = useParams<{ id: string }>();
@@ -82,7 +84,8 @@ export const ProjectContainer = () => {
       return grabbedIssues.findIndex(i => i.id === issue.id) === -1;
     });
     setIncompleteIssues(incompleteIssues);
-  }, [grabbedIssues, issues, projectKey]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [grabbedIssues.length, issues.length, projectKey]);
 
   return (
     <Project
@@ -93,6 +96,7 @@ export const ProjectContainer = () => {
       incompleteIssues={incompleteIssues}
       loadingGrabbedIssues={loadingGrabbedIssues}
       grabbedIssueGroups={grabbedIssueGroups}
+      disabledIssueKey={disabledIssueKey}
       userClickedUpdateIncompleteIssue={issue => {
         confirmAlert({
           customUI: ({ onClose }) => {
@@ -100,6 +104,7 @@ export const ProjectContainer = () => {
               key: issue.key,
               onClose,
               onDayClick: date => {
+                setDisabledIssueKey(issue.key);
                 api
                   .createGrabbedIssue({
                     id: issue.id,
@@ -113,9 +118,13 @@ export const ProjectContainer = () => {
                   .then(() => {
                     toast.success('Issue marked as grabbed!');
                     getGrabbedIssues(projectKey, issue.fields.assignee.emailAddress);
+                    setDisabledIssueKey(null);
+                    onClose();
                   })
                   .catch(error => {
                     toast.error(error.message);
+                    setDisabledIssueKey(null);
+                    onClose();
                   });
               },
             });
@@ -129,14 +138,19 @@ export const ProjectContainer = () => {
               key: issue.key,
               onClose,
               onDayClick: date => {
+                setDisabledIssueKey(issue.key);
                 api
                   .updateGrabbedIssue(issue.id, { dateCompleted: date.toJSON() })
                   .then(() => {
                     toast.success('Issue updated!');
                     getGrabbedIssues(projectKey, issue.assigneeEmail);
+                    setDisabledIssueKey(null);
+                    onClose();
                   })
                   .catch(error => {
                     toast.error(error.message);
+                    setDisabledIssueKey(null);
+                    onClose();
                   });
               },
             });
@@ -144,25 +158,31 @@ export const ProjectContainer = () => {
         });
       }}
       userClickedCheckGrabbedIssue={(issue, checked) => {
+        setDisabledIssueKey(issue.key);
         api
           .updateGrabbedIssue(issue.id, { isDone: checked })
           .then(() => {
             toast.success('Issue updated!');
             getGrabbedIssues(projectKey, issue.assigneeEmail);
+            setDisabledIssueKey(null);
           })
           .catch(error => {
             toast.error(error.message);
+            setDisabledIssueKey(null);
           });
       }}
       userClickedDeleteGrabbedIssue={issue => {
+        setDisabledIssueKey(issue.key);
         api
           .deleteGrabbedIssue(issue.id)
           .then(() => {
             toast.success('Issue deleted!');
             getGrabbedIssues(projectKey, issue.assigneeEmail);
+            setDisabledIssueKey(null);
           })
           .catch(error => {
             toast.error(error.message);
+            setDisabledIssueKey(null);
           });
       }}
     />

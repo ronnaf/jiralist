@@ -8,6 +8,7 @@ type Props = {
   summary: string;
   checkbox?: boolean;
   checked?: boolean;
+  disabled?: boolean;
   onCheck?: ChangeEventHandler<HTMLInputElement>;
   onUpdate?: () => void;
   onCopy: () => void;
@@ -18,19 +19,21 @@ export const JIssueItem = (props: Props) => {
   return (
     <Issue>
       <Child>
-        {props.checkbox && <input type="checkbox" checked={props.checked} onChange={props.onCheck} />}
+        {props.checkbox && (
+          <input type="checkbox" checked={props.checked} onChange={props.onCheck} disabled={props.disabled} />
+        )}
         <Regular>
           [<b>{props.issueKey}</b>] <IssueDivide>|</IssueDivide> {props.summary}
         </Regular>
       </Child>
       <Child>
         {!!props.onDelete && (
-          <JRawButton onClick={props.onDelete}>
+          <JRawButton onClick={props.onDelete} disabled={props.disabled}>
             <ButtonText color={colors.shadow}>delete</ButtonText>
           </JRawButton>
         )}
         {!!props.onUpdate && (
-          <JRawButton onClick={props.onUpdate}>
+          <JRawButton onClick={props.onUpdate} disabled={props.disabled}>
             <ButtonText color={colors.shadow}>update</ButtonText>
           </JRawButton>
         )}

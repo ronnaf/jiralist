@@ -23,6 +23,7 @@ export const Project = (props: ProjectProps) => {
           {props.issues.map(issue => (
             <JIssueItem
               key={issue.id}
+              disabled={issue.key === props.disabledIssueKey}
               issueKey={issue.key}
               summary={issue.fields.summary}
               onCopy={() => copyToClipboard(getIssueLink(issue.key))}
@@ -39,6 +40,7 @@ export const Project = (props: ProjectProps) => {
           {props.incompleteIssues.map(issue => (
             <JIssueItem
               key={issue.id}
+              disabled={issue.key === props.disabledIssueKey}
               issueKey={issue.key}
               summary={issue.fields.summary}
               onCopy={() => copyToClipboard(getIssueLink(issue.key))}
@@ -60,6 +62,7 @@ export const Project = (props: ProjectProps) => {
                   <JIssueItem
                     checkbox
                     key={issue.id}
+                    disabled={issue.key === props.disabledIssueKey}
                     issueKey={issue.key}
                     summary={issue.summary}
                     checked={issue.isDone}

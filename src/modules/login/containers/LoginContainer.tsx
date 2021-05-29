@@ -44,7 +44,6 @@ export const LoginContainer = () => {
 
         if (cloudRes.success) {
           const { id: cloudId } = cloudRes.value[0];
-          console.log('cloudRes -', cloudRes.value);
           services.storage.storeToken(jStorageKeys.J_API_TOKEN, access_token);
           services.storage.storeToken(jStorageKeys.J_CLOUD_ID, cloudId);
           history.replace(routes.PROJECTS);
