@@ -105,6 +105,7 @@ export const ProjectContainer = () => {
               onClose,
               onDayClick: date => {
                 setDisabledIssueKey(issue.key);
+                onClose();
                 api
                   .createGrabbedIssue({
                     id: issue.id,
@@ -119,12 +120,10 @@ export const ProjectContainer = () => {
                     toast.success('Issue marked as grabbed!');
                     getGrabbedIssues(projectKey, issue.fields.assignee.emailAddress);
                     setDisabledIssueKey(null);
-                    onClose();
                   })
                   .catch(error => {
                     toast.error(error.message);
                     setDisabledIssueKey(null);
-                    onClose();
                   });
               },
             });
@@ -139,18 +138,17 @@ export const ProjectContainer = () => {
               onClose,
               onDayClick: date => {
                 setDisabledIssueKey(issue.key);
+                onClose();
                 api
                   .updateGrabbedIssue(issue.id, { dateCompleted: date.toJSON() })
                   .then(() => {
                     toast.success('Issue updated!');
                     getGrabbedIssues(projectKey, issue.assigneeEmail);
                     setDisabledIssueKey(null);
-                    onClose();
                   })
                   .catch(error => {
                     toast.error(error.message);
                     setDisabledIssueKey(null);
-                    onClose();
                   });
               },
             });
