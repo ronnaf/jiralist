@@ -21,7 +21,7 @@ export const JSection: React.FC<Props> = props => {
         {props.loading && <JSpinner />}
       </SectionLabel>
       <SizedBox height={10} />
-      {!props.loading && props.children}
+      {props.children}
     </div>
   );
 };

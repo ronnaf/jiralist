@@ -93,22 +93,78 @@ export const ProjectContainer = () => {
       incompleteIssues={incompleteIssues}
       loadingGrabbedIssues={loadingGrabbedIssues}
       grabbedIssueGroups={grabbedIssueGroups}
-      userClickedUpdateIncompleteIssue={({ key }) => {
+      userClickedUpdateIncompleteIssue={issue => {
         confirmAlert({
           customUI: ({ onClose }) => {
-            return renderPickerModal({ key, onClose, onDayClick: () => {} });
+            return renderPickerModal({
+              key: issue.key,
+              onClose,
+              onDayClick: date => {
+                api
+                  .createGrabbedIssue({
+                    id: issue.id,
+                    key: issue.key,
+                    projectKey,
+                    summary: issue.fields.summary,
+                    assigneeEmail: issue.fields.assignee.emailAddress,
+                    dateCompleted: date.toJSON(),
+                    isDone: false,
+                  })
+                  .then(() => {
+                    toast.success('Issue marked as grabbed!');
+                    getGrabbedIssues(projectKey, issue.fields.assignee.emailAddress);
+                  })
+                  .catch(error => {
+                    toast.error(error.message);
+                  });
+              },
+            });
           },
         });
       }}
-      userClickedUpdateGrabbedIssue={({ key }) => {
+      userClickedUpdateGrabbedIssue={issue => {
         confirmAlert({
           customUI: ({ onClose }) => {
-            return renderPickerModal({ key, onClose, onDayClick: () => {} });
+            return renderPickerModal({
+              key: issue.key,
+              onClose,
+              onDayClick: date => {
+                api
+                  .updateGrabbedIssue(issue.id, { dateCompleted: date.toJSON() })
+                  .then(() => {
+                    toast.success('Issue updated!');
+                    getGrabbedIssues(projectKey, issue.assigneeEmail);
+                  })
+                  .catch(error => {
+                    toast.error(error.message);
+                  });
+              },
+            });
           },
         });
       }}
-      userClickedCheckGrabbedIssue={() => {}}
-      userClickedDeleteGrabbedIssue={() => {}}
+      userClickedCheckGrabbedIssue={(issue, checked) => {
+        api
+          .updateGrabbedIssue(issue.id, { isDone: checked })
+          .then(() => {
+            toast.success('Issue updated!');
+            getGrabbedIssues(projectKey, issue.assigneeEmail);
+          })
+          .catch(error => {
+            toast.error(error.message);
+          });
+      }}
+      userClickedDeleteGrabbedIssue={issue => {
+        api
+          .deleteGrabbedIssue(issue.id)
+          .then(() => {
+            toast.success('Issue deleted!');
+            getGrabbedIssues(projectKey, issue.assigneeEmail);
+          })
+          .catch(error => {
+            toast.error(error.message);
+          });
+      }}
     />
   );
 };
