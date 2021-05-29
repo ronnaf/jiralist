@@ -3,6 +3,7 @@ import Modal from 'react-modal';
 
 type Props = {
   isOpen: boolean;
+  onClose?: () => void;
 };
 
 export const JModal: React.FC<Props> = props => {
@@ -10,6 +11,7 @@ export const JModal: React.FC<Props> = props => {
     <Modal
       ariaHideApp={false}
       isOpen={props.isOpen}
+      onRequestClose={props.onClose}
       style={{
         overlay: {
           background: 'none',

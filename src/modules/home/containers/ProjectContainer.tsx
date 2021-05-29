@@ -8,6 +8,8 @@ import { Environment } from '../../../Environment';
 import { RootState } from '../../../model/store';
 import { getGrabbedIssuesGroupedByDate, GrabbedIssueGroup } from '../../../util/Issue.util';
 import { Project } from '../components/Project';
+import { confirmAlert } from 'react-confirm-alert';
+import { JPickerModal } from '../components/shared/JPickerModal';
 
 export type ProjectProps = {
   projectKey: string;
@@ -17,10 +19,10 @@ export type ProjectProps = {
   incompleteIssues: JiraIssue[];
   loadingGrabbedIssues: boolean;
   grabbedIssueGroups: GrabbedIssueGroup[];
-  handleUpdateIncompleteIssue: (issue: JiraIssue) => void;
-  handleUpdateGrabbedIssue: (issue: GrabbedIssue) => void;
-  handleCheckGrabbedIssue: (issue: GrabbedIssue, checked: boolean) => void;
-  handleDeleteGrabbedIssue: (issue: GrabbedIssue) => void;
+  userClickedUpdateIncompleteIssue: (issue: JiraIssue) => void;
+  userClickedUpdateGrabbedIssue: (issue: GrabbedIssue) => void;
+  userClickedCheckGrabbedIssue: (issue: GrabbedIssue, checked: boolean) => void;
+  userClickedDeleteGrabbedIssue: (issue: GrabbedIssue) => void;
 };
 
 export const ProjectContainer = () => {
@@ -33,7 +35,7 @@ export const ProjectContainer = () => {
   const [grabbedIssueGroups, setGrabbedIssueGroups] = useState<GrabbedIssueGroup[]>([]);
   const [incompleteIssues, setIncompleteIssues] = useState<JiraIssue[]>([]);
 
-  const { jiraAPI, api, services } = Environment.current();
+  const { jiraAPI, api } = Environment.current();
   const { id: projectKey } = useParams<{ id: string }>();
 
   const getGrabbedIssues = useCallback(
@@ -67,7 +69,7 @@ export const ProjectContainer = () => {
     })();
   }, [jiraAPI, projectKey]);
 
-  //Fetches grabbed issues based on [projectKey]
+  // Fetches grabbed issues based on [projectKey]
   useEffect(() => {
     if (!projectKey || !user?.emailAddress) return;
     getGrabbedIssues(projectKey, user.emailAddress);
@@ -91,10 +93,38 @@ export const ProjectContainer = () => {
       incompleteIssues={incompleteIssues}
       loadingGrabbedIssues={loadingGrabbedIssues}
       grabbedIssueGroups={grabbedIssueGroups}
-      handleUpdateIncompleteIssue={() => {}}
-      handleUpdateGrabbedIssue={() => {}}
-      handleCheckGrabbedIssue={() => {}}
-      handleDeleteGrabbedIssue={() => {}}
+      userClickedUpdateIncompleteIssue={({ key }) => {
+        confirmAlert({
+          customUI: ({ onClose }) => {
+            return renderPickerModal({ key, onClose, onDayClick: () => {} });
+          },
+        });
+      }}
+      userClickedUpdateGrabbedIssue={({ key }) => {
+        confirmAlert({
+          customUI: ({ onClose }) => {
+            return renderPickerModal({ key, onClose, onDayClick: () => {} });
+          },
+        });
+      }}
+      userClickedCheckGrabbedIssue={() => {}}
+      userClickedDeleteGrabbedIssue={() => {}}
+    />
+  );
+};
+
+/**
+ * Renders datepicker modal
+ * @param args
+ * @returns
+ */
+const renderPickerModal = (args: { key: string; onClose: () => void; onDayClick: (date: Date) => void }) => {
+  return (
+    <JPickerModal
+      isOpen={true}
+      title={`When are you planning to complete ${args.key}?`}
+      onDayClick={args.onDayClick}
+      onClose={args.onClose}
     />
   );
 };

@@ -1,27 +1,15 @@
 import React from 'react';
-import DayPicker from 'react-day-picker';
+import { Route, Switch } from 'react-router';
 import styled from 'styled-components';
-import { JModal } from '../../core/JModal';
-import { JRawDiv } from '../../core/JRawDiv';
-import { SizedBox } from '../../core/SizedBox';
-import { colors, H1 } from '../../core/Styles';
-import { HomeProps } from '../containers/HomeContainer';
+import { routes } from '../../../routes';
 import { JHeader } from '../../core/JHeader';
 import { JSidebar } from '../../core/JSidebar';
-import { Route, Switch } from 'react-router';
-import { Landing } from './Landing';
-import { routes } from '../../../routes';
+import { colors } from '../../core/Styles';
+import { HomeProps } from '../containers/HomeContainer';
 import { ProjectContainer } from '../containers/ProjectContainer';
+import { Landing } from './Landing';
 
 export const HomeScreen = (props: HomeProps) => {
-  const onDayClick = (date: Date) => {
-    if (props.selectedIncIssue) {
-      props.userCreatedGrabbedIssue(date);
-    } else if (props.selectedGrabbedIssue) {
-      props.userUpdatedGrabbedIssue(date);
-    }
-  };
-
   return (
     <MainDiv>
       <InnerDiv>
@@ -36,15 +24,6 @@ export const HomeScreen = (props: HomeProps) => {
           </Body>
         </Main>
       </InnerDiv>
-      <JModal isOpen={props.pickerOpen}>
-        <JRawDiv>
-          <H1 color={colors.background1}>When are you planning to complete {props.selectedIncIssue?.key}?</H1>
-          <SizedBox height={10} />
-          <PickerDiv>
-            <DayPicker todayButton="Today" onDayClick={onDayClick} onTodayButtonClick={onDayClick} />
-          </PickerDiv>
-        </JRawDiv>
-      </JModal>
     </MainDiv>
   );
 };
@@ -70,14 +49,5 @@ const Body = styled.div`
   padding-left: 1.5rem;
   & > :not(:last-child) {
     margin-bottom: 28px;
-  }
-`;
-
-const PickerDiv = styled.div`
-  border: 1px solid ${colors.shadow};
-  border-radius: 4px;
-
-  .DayPicker-Footer {
-    text-align: center;
   }
 `;

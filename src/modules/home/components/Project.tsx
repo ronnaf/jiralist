@@ -42,7 +42,7 @@ export const Project = (props: ProjectProps) => {
               issueKey={issue.key}
               summary={issue.fields.summary}
               onCopy={() => copyToClipboard(getIssueLink(issue.key))}
-              onUpdate={() => props.handleUpdateIncompleteIssue(issue)}
+              onUpdate={() => props.userClickedUpdateIncompleteIssue(issue)}
             />
           ))}
         </Issues>
@@ -64,9 +64,9 @@ export const Project = (props: ProjectProps) => {
                     summary={issue.summary}
                     checked={issue.isDone}
                     onCopy={() => copyToClipboard(getIssueLink(issue.key))}
-                    onUpdate={() => props.handleUpdateGrabbedIssue(issue)}
-                    onCheck={e => props.handleCheckGrabbedIssue(issue, e.target.checked)}
-                    onDelete={() => props.handleDeleteGrabbedIssue(issue)}
+                    onUpdate={() => props.userClickedUpdateGrabbedIssue(issue)}
+                    onCheck={e => props.userClickedCheckGrabbedIssue(issue, e.target.checked)}
+                    onDelete={() => props.userClickedDeleteGrabbedIssue(issue)}
                   />
                 ))}
               </Issues>
