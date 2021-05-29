@@ -1,20 +1,26 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
 import styled from 'styled-components';
 import { JiraProject } from '../../api/models/JiraProject';
+import { Environment } from '../../Environment';
+import { LOGOUT_ACTION } from '../../model/store';
+import { routes } from '../../routes';
 import { JButton } from './JButton';
 import { JRawButton } from './JRawButton';
 import { JSpinner } from './JSpinner';
 import { SizedBox } from './SizedBox';
-import { colors, H1, Regular } from './Styles';
+import { colors, H1, Regular, Subtitle } from './Styles';
 
 type Props = {
   projects: JiraProject[];
   loading: boolean;
-  handleLogout: () => void;
-  handleProjectChange: React.Dispatch<React.SetStateAction<JiraProject | null>>;
 };
 
 export const JSidebar = (props: Props) => {
+  const { services } = Environment.current();
+  const history = useHistory();
+  const dispatch = useDispatch();
   return (
     <Sidebar>
       <div>
@@ -24,16 +30,35 @@ export const JSidebar = (props: Props) => {
         </Flex>
         <SizedBox height={26} />
         <Projects>
-          {props.projects.map(project => (
-            <div key={project.id}>
-              <JRawButton onClick={() => props.handleProjectChange(project)}>
-                <Regular>{project.name}</Regular>
-              </JRawButton>
-            </div>
-          ))}
+          {props.projects.map(project => {
+            return (
+              <div key={project.id}>
+                <JRawButton
+                  onClick={() => {
+                    history.push(routes.PROJECTS__VIEW(project.key));
+                  }}>
+                  <Regular>{project.name}</Regular>
+                </JRawButton>
+              </div>
+            );
+          })}
         </Projects>
-        <SizedBox height={26} />
-        <JButton title="Log out" onClick={props.handleLogout} />
+        <SizedBox height={36} />
+        <Subtitle>
+          Made with ❤️ by{' '}
+          <a href="https://github.com/ronnaf" target="_blank" rel="noreferrer">
+            ronnaf
+          </a>
+        </Subtitle>
+        <SizedBox height={18} />
+        <JButton
+          title="Log out"
+          onClick={() => {
+            services.storage.clear();
+            dispatch({ type: LOGOUT_ACTION });
+            history.push(routes.LOGIN);
+          }}
+        />
       </div>
       <VerticalLine />
     </Sidebar>

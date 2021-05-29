@@ -8,6 +8,10 @@ import { colors, H1 } from '../../core/Styles';
 import { HomeProps } from '../containers/HomeContainer';
 import { JHeader } from '../../core/JHeader';
 import { JSidebar } from '../../core/JSidebar';
+import { Route, Switch } from 'react-router';
+import { Landing } from './Landing';
+import { routes } from '../../../routes';
+import { ProjectContainer } from '../containers/ProjectContainer';
 
 export const HomeScreen = (props: HomeProps) => {
   const onDayClick = (date: Date) => {
@@ -23,13 +27,13 @@ export const HomeScreen = (props: HomeProps) => {
       <InnerDiv>
         <JHeader displayName={props.currentUser?.displayName || '-'} />
         <Main>
-          <JSidebar
-            projects={props.projects}
-            loading={props.loadingProjects}
-            handleLogout={props.userClickedLogout}
-            handleProjectChange={props.userChangedCurrentProject}
-          />
-          <Body>Hello world!</Body>
+          <JSidebar projects={props.projects} loading={props.loadingProjects} />
+          <Body>
+            <Switch>
+              <Route exact path={routes.PROJECTS} component={Landing} />
+              <Route exact path={routes.PROJECTS__VIEW()} component={ProjectContainer} />
+            </Switch>
+          </Body>
         </Main>
       </InnerDiv>
       <JModal isOpen={props.pickerOpen}>

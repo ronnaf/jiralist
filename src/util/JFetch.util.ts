@@ -68,7 +68,7 @@ export const jFetch = async (args: Args) => {
       const errorData = error.response.data;
       if (typeof errorData === 'string') {
         throw new Error(errorData);
-      } else if (errorData.errorMessages.length) {
+      } else if (errorData.errorMessages?.length) {
         throw new Error(errorData.errorMessages[0]);
       } else {
         throw new Error(errorData.message);
