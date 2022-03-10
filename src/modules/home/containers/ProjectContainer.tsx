@@ -81,7 +81,7 @@ export const ProjectContainer = () => {
   useEffect(() => {
     if (!projectKey) return;
     const incompleteIssues = issues.filter(issue => {
-      return grabbedIssues.findIndex(i => i.id === issue.id) === -1;
+      return grabbedIssues.findIndex(i => i._id === issue.id) === -1;
     });
     setIncompleteIssues(incompleteIssues);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -108,7 +108,7 @@ export const ProjectContainer = () => {
                 onClose();
                 api
                   .createGrabbedIssue({
-                    id: issue.id,
+                    _id: issue.id,
                     key: issue.key,
                     projectKey,
                     summary: issue.fields.summary,
@@ -140,7 +140,7 @@ export const ProjectContainer = () => {
                 setDisabledIssueKey(issue.key);
                 onClose();
                 api
-                  .updateGrabbedIssue(issue.id, { dateCompleted: date.toJSON() })
+                  .updateGrabbedIssue(issue._id, { dateCompleted: date.toJSON() })
                   .then(() => {
                     toast.success('Issue updated!');
                     getGrabbedIssues(projectKey, issue.assigneeEmail);
@@ -158,7 +158,7 @@ export const ProjectContainer = () => {
       userClickedCheckGrabbedIssue={(issue, checked) => {
         setDisabledIssueKey(issue.key);
         api
-          .updateGrabbedIssue(issue.id, { isDone: checked })
+          .updateGrabbedIssue(issue._id, { isDone: checked })
           .then(() => {
             toast.success('Issue updated!');
             getGrabbedIssues(projectKey, issue.assigneeEmail);
@@ -172,7 +172,7 @@ export const ProjectContainer = () => {
       userClickedDeleteGrabbedIssue={issue => {
         setDisabledIssueKey(issue.key);
         api
-          .deleteGrabbedIssue(issue.id)
+          .deleteGrabbedIssue(issue._id)
           .then(() => {
             toast.success('Issue deleted!');
             getGrabbedIssues(projectKey, issue.assigneeEmail);

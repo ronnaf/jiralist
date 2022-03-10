@@ -104,7 +104,7 @@ export const Project = (props: ProjectProps) => {
                       {issueGroup.issues.map(issue => (
                         <JIssueItem
                           checkbox
-                          key={issue.id}
+                          key={issue._id}
                           disabled={props.loadingGrabbedIssues || issue.key === props.disabledIssueKey}
                           issueKey={issue.key}
                           summary={issue.summary}

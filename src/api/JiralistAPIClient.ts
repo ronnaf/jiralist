@@ -1,6 +1,8 @@
-import { jFetch } from '../util/JFetch.util';
+import { extractIssueFromDoc } from '../util/ExtractIssueFromDoc';
 import { Result } from '../util/Result.util';
+import { jLocalDb } from './../util/JLocalDb';
 import { JiralistAPI } from './JiralistAPI';
+import { GrabbedIssue } from './models/GrabbedIssue';
 
 /**
  * creates an `API` backed by the product's API
@@ -15,57 +17,46 @@ export const jiralistAPIClient = (options: {
     getGrabbedIssues: async payload => {
       try {
         const { assigneeEmail, projectKey } = payload;
-        const filter = encodeURIComponent(
-          JSON.stringify({
-            where: {
-              assigneeEmail,
-              projectKey,
-            },
-          })
-        );
-        const result = await jFetch({
-          baseUrl: options.baseURL,
-          url: `/issues?filter=${filter}`,
-        });
-        return Result.success(result);
+        const response = await jLocalDb.allDocs<GrabbedIssue>({ include_docs: true, descending: true });
+
+        const issues = response.rows
+          .map(row => extractIssueFromDoc(row.doc!))
+          .filter(issue => issue.assigneeEmail === assigneeEmail && issue.projectKey === projectKey);
+
+        return Result.success(issues);
       } catch (e) {
         return Result.failure(e.message);
       }
     },
     createGrabbedIssue: async payload => {
       try {
-        const result = await jFetch({
-          method: 'POST',
-          baseUrl: options.baseURL,
-          url: `/issues`,
-          data: payload,
-        });
-        return Result.success(result);
+        await jLocalDb.put<GrabbedIssue>(payload);
+        return Result.success(payload);
       } catch (e) {
         return Result.failure(e.message);
       }
     },
     updateGrabbedIssue: async (id, payload) => {
       try {
-        const result = await jFetch({
-          method: 'PATCH',
-          baseUrl: options.baseURL,
-          url: `/issues/${id}`,
-          data: payload,
-        });
-        return Result.success(result);
+        const response = await jLocalDb.get<GrabbedIssue>(id);
+        const { _rev } = response;
+        const issue = extractIssueFromDoc(response);
+
+        const issueUpdate = { _rev, ...issue, ...payload };
+        await jLocalDb.put(issueUpdate);
+
+        return Result.success(issue);
       } catch (e) {
         return Result.failure(e.message);
       }
     },
     deleteGrabbedIssue: async id => {
       try {
-        const result = await jFetch({
-          method: 'DELETE',
-          baseUrl: options.baseURL,
-          url: `/issues/${id}`,
-        });
-        return Result.success(result);
+        const issueDoc = await jLocalDb.get<GrabbedIssue>(id);
+        await jLocalDb.remove(issueDoc);
+
+        const issue = extractIssueFromDoc(issueDoc);
+        return Result.success(issue);
       } catch (e) {
         return Result.failure(e.message);
       }
