@@ -10,6 +10,21 @@ Bootsrapped with react/typescript template based on the [arno](https://github.co
 
 ## Getting started
 
+### Running locally
+
+Add .env file
+
+```bash
+cp .env.example .env
+```
+
+Replace the following vars with the ones from [jiralist-dev](https://developer.atlassian.com/console/myapps/b04690dd-1c73-4838-bc00-3b8496362a66/overview)
+
+```bash
+REACT_APP_3LO_CLIENT_ID=
+REACT_APP_3LO_SECRET=
+```
+
 Install dependencies
 
 ```bash
