@@ -1,34 +1,53 @@
 # jiralist
 
 **The idea:**  
-create a checklist app that connects to Jira to list out your current issues (todo, and in progress). when you cross-out an item, it will group into the date you crossed it out on.
+Create a checklist app that connects to Jira to list out your current issues (todo, and in progress). when you cross-out an item, it will group into the date you crossed it out on.
 
-bootsrapped with react/typescript template based on the [arno](https://github.com/smashingboxes/arno) react native template.
+Bootsrapped with react/typescript template based on the [arno](https://github.com/smashingboxes/arno) react native template.
 
 ![login-sc](https://user-images.githubusercontent.com/32459751/120070095-ef3b7280-c0bb-11eb-8ce3-3dc43de87d42.png)
 ![home-sc](https://user-images.githubusercontent.com/32459751/120070099-f1053600-c0bb-11eb-8091-1a6dc0a9283f.png)
 
-# getting started
+## Getting started
+
+Install dependencies
 
 ```bash
 npm install
+```
+
+Run on development
+
+```bash
 npm run start
 ```
 
-# file structure
+## File structure
 
 ```bash
-modules/
-    # `core` includes all shared components
-    # we could include these files inside a `component/` to make it adhere to the `module` structure
-    # but i think its unnecessary bc i don't think we would connect these files into containers
-    core/
-      Styles.ts # different typefaces and colors specific to this project
-    home/ # a module
-    todo.sample/ # the traditional todo list example
-        components/ # dumb components
-        containers/ # smart components
-    module.template/ # a minimal module template that can be used to start a new module
-        components/ # dumb components
-        containers/ # smart components
+📦src
+ ┣ 📂api
+ ┃ ┣ 📂models         # Typescript models and types
+ ┃ ┣ 📜API.ts         # API model
+ ┃ ┣ 📜JiraAPI.ts     # API model specific to this project
+ ┃ ┣ 📜JiraAPIClient.ts # API client
+ ┃ ┗ 📜MockAPI.ts
+ ┣ 📂model            # Redux store and slices
+ ┃ ┣ 📜store.ts
+ ┃ ┗ 📜userSlice.ts
+ ┣ 📂modules
+ ┃ ┣ 📂core           # Shared compoents, global styling
+ ┃ ┃ ┗ 📜Styles.ts    # Typefaces and colors specific to this project
+ ┃ ┣ 📂todo           # An example module
+ ┃ ┃ ┣ 📂components   # Dumb, stateless components
+ ┃ ┃ ┗ 📂containers   # Smart, stateful components
+ ┣ 📂services         # Services used throughout the app
+ ┃ ┣ 📜Auth0Service.ts
+ ┃ ┣ 📜LocalStorageService.ts
+ ┃ ┗ 📜LoggingService.ts
+ ┣ 📂util             # Helpful utilities used throughout the app
+ ┣ 📜App.tsx          # Top-level component definitions
+ ┣ 📜Environment.ts   # Global environment config to access API and services
+ ┣ 📜index.tsx        # Entry point
+ ┗ 📜routes.ts        # Route definitions
 ```
